@@ -1,265 +1,185 @@
-/***********************************************************
- * Simple Mario-like Platformer (SDL2 Skeleton in C++)
- * 
- * NOTE: 
- * 1) Make sure you have SDL2 and SDL2_image installed.
- * 2) Compile with something like:
- *    g++ -o platformer main.cpp -lSDL2 -lSDL2_image
- ***********************************************************/
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <optional>
+#include <vector>
 
- #include <SDL2/SDL.h>
- #include <SDL2/SDL_image.h>
- #include <iostream>
- #include <vector>
- 
- // Screen dimensions
- const int SCREEN_WIDTH  = 800;
- const int SCREEN_HEIGHT = 600;
- 
- // Player constants
- const float PLAYER_SPEED       = 3.0f;   // Horizontal speed
- const float JUMP_VELOCITY      = 12.0f;  // Upward jump speed
- const float GRAVITY            = 0.5f;   // Downward acceleration
- const int   PLAYER_WIDTH       = 32;     // Player sprite width
- const int   PLAYER_HEIGHT      = 32;     // Player sprite height
- 
- // A struct for platform data
- struct Platform {
-     SDL_Rect rect; // x, y, w, h
- };
- 
- // A struct to represent the player
- struct Player {
-     float x, y;      // Position
-     float vx, vy;    // Velocity
-     bool onGround;
- 
-     SDL_Texture* texture; // The player sprite
-     SDL_Rect srcRect;     // The portion of the sprite sheet to draw
-     SDL_Rect dstRect;     // Destination on screen
- 
-     Player() : x(0), y(0), vx(0), vy(0), onGround(false), texture(nullptr) {
-         srcRect = {0, 0, PLAYER_WIDTH, PLAYER_HEIGHT};
-         dstRect = { (int)x, (int)y, PLAYER_WIDTH, PLAYER_HEIGHT };
-     }
- };
- 
- // Forward declarations
- bool checkCollision(const SDL_Rect& a, const SDL_Rect& b);
- bool initSDL(SDL_Window*& window, SDL_Renderer*& renderer);
- SDL_Texture* loadTexture(const std::string &path, SDL_Renderer* renderer);
- 
- int main(int argc, char* argv[])
- {
-     SDL_Window* window = nullptr;
-     SDL_Renderer* renderer = nullptr;
- 
-     if (!initSDL(window, renderer)) {
-         std::cerr << "Failed to initialize SDL!\n";
-         return 1;
-     }
- 
-     // Load a player texture (replace with your own image)
-     // For demonstration, we load a 32x32 placeholder sprite from a local file.
-     // Make sure the file path is correct or replace with your own.
-     SDL_Texture* playerTexture = loadTexture("mario.png", renderer);
-     if (!playerTexture) {
-         std::cerr << "Failed to load player texture.\n";
-         return 1;
-     }
- 
-     // Create player
-     Player player;
-     player.x = 100.0f;
-     player.y = 100.0f;
-     player.texture = playerTexture;
- 
-     // Sample platforms
-     // (In a real game, you might load this from a file or tile map)
-     std::vector<Platform> platforms;
-     platforms.push_back({ SDL_Rect{0, 550, 800, 50}   }); // Floor
-     platforms.push_back({ SDL_Rect{200, 450, 150, 25} });
-     platforms.push_back({ SDL_Rect{400, 350, 150, 25} });
-     platforms.push_back({ SDL_Rect{600, 250, 150, 25} });
- 
-     // Main loop flag
-     bool quit = false;
-     // Event handler
-     SDL_Event e;
- 
-     // Frame timing
-     Uint32 lastTime = SDL_GetTicks();
-     
-     while (!quit) {
-         // Handle events
-         while (SDL_PollEvent(&e) != 0) {
-             if (e.type == SDL_QUIT) {
-                 quit = true;
-             } else if (e.type == SDL_KEYDOWN) {
-                 if (e.key.keysym.sym == SDLK_ESCAPE) {
-                     quit = true;
-                 }
-                 // Jump
-                 if (e.key.keysym.sym == SDLK_SPACE && player.onGround) {
-                     player.vy = -JUMP_VELOCITY;
-                     player.onGround = false;
-                 }
-             }
-         }
- 
-         // Get keyboard state for left/right movement
-         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-         player.vx = 0; // reset horizontal velocity each frame
-         if (currentKeyStates[SDL_SCANCODE_LEFT]) {
-             player.vx = -PLAYER_SPEED;
-         } else if (currentKeyStates[SDL_SCANCODE_RIGHT]) {
-             player.vx = PLAYER_SPEED;
-         }
- 
-         // Calculate delta time
-         Uint32 currentTime = SDL_GetTicks();
-         float deltaTime = (currentTime - lastTime) / 16.666f; // Approx ~60 FPS
-         lastTime = currentTime;
- 
-         // APPLY GRAVITY
-         player.vy += GRAVITY * deltaTime;
- 
-         // UPDATE PLAYER POSITION
-         player.x += player.vx * deltaTime;
-         player.y += player.vy * deltaTime;
- 
-         // COLLISION CHECK
-         // We'll do a simplified bounding-box check for each platform
-         player.onGround = false;
-         SDL_Rect playerRect = {
-             (int)player.x,
-             (int)player.y,
-             PLAYER_WIDTH,
-             PLAYER_HEIGHT
-         };
- 
-         for (auto& platform : platforms) {
-             // If there's a collision
-             if (checkCollision(playerRect, platform.rect)) {
-                 // We collided from above (floor)
-                 if (player.vy > 0) {
-                     player.y = platform.rect.y - PLAYER_HEIGHT;
-                     player.vy = 0;
-                     player.onGround = true;
-                 }
-                 // Otherwise, you could add detection for hitting your head or from the side
-             }
-         }
- 
-         // KEEP PLAYER IN SCREEN (optional simple clamp)
-         if (player.x < 0) player.x = 0;
-         if (player.x > SCREEN_WIDTH - PLAYER_WIDTH) {
-             player.x = SCREEN_WIDTH - PLAYER_WIDTH;
-         }
-         if (player.y > SCREEN_HEIGHT - PLAYER_HEIGHT) {
-             // If you fall below screen, reset
-             player.x = 100.0f;
-             player.y = 100.0f;
-             player.vy = 0;
-         }
- 
-         // RENDER
-         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // black background
-         SDL_RenderClear(renderer);
- 
-         // Draw platforms
-         SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
-         for (auto& platform : platforms) {
-             SDL_RenderFillRect(renderer, &platform.rect);
-         }
- 
-         // Draw player
-         player.dstRect.x = (int)player.x;
-         player.dstRect.y = (int)player.y;
-         SDL_RenderCopy(renderer, player.texture, &player.srcRect, &player.dstRect);
- 
-         SDL_RenderPresent(renderer);
-     }
- 
-     // Clean up
-     SDL_DestroyTexture(playerTexture);
-     SDL_DestroyRenderer(renderer);
-     SDL_DestroyWindow(window);
-     SDL_Quit();
- 
-     return 0;
- }
- 
- // ----------------------------------------------------------
- // checkCollision: Basic AABB collision check
- // ----------------------------------------------------------
- bool checkCollision(const SDL_Rect& a, const SDL_Rect& b) {
-     if (a.x + a.w <= b.x) return false;
-     if (a.x >= b.x + b.w) return false;
-     if (a.y + a.h <= b.y) return false;
-     if (a.y >= b.y + b.h) return false;
-     return true;
- }
- 
- // ----------------------------------------------------------
- // initSDL: Initialize SDL and create a window/renderer
- // ----------------------------------------------------------
- bool initSDL(SDL_Window*& window, SDL_Renderer*& renderer) {
-     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
-         std::cerr << "SDL could not initialize! SDL Error: " 
-                   << SDL_GetError() << std::endl;
-         return false;
-     }
- 
-     window = SDL_CreateWindow("Simple Mario-like Platformer",
-                               SDL_WINDOWPOS_CENTERED, 
-                               SDL_WINDOWPOS_CENTERED,
-                               SCREEN_WIDTH, SCREEN_HEIGHT,
-                               SDL_WINDOW_SHOWN);
- 
-     if (!window) {
-         std::cerr << "Window could not be created! SDL Error: " 
-                   << SDL_GetError() << std::endl;
-         return false;
-     }
- 
-     renderer = SDL_CreateRenderer(window, -1, 
-                                   SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-     if (!renderer) {
-         std::cerr << "Renderer could not be created! SDL Error: " 
-                   << SDL_GetError() << std::endl;
-         return false;
-     }
- 
-     // Initialize SDL_Image for PNG loading (optional but recommended)
-     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-         std::cerr << "SDL_image could not initialize! SDL_image Error: "
-                   << IMG_GetError() << std::endl;
-         return false;
-     }
- 
-     return true;
- }
- 
- // ----------------------------------------------------------
- // loadTexture: Helper to load PNG textures using SDL_image
- // ----------------------------------------------------------
- SDL_Texture* loadTexture(const std::string &path, SDL_Renderer* renderer) {
-     SDL_Texture* newTexture = nullptr;
-     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-     if (loadedSurface == nullptr) {
-         std::cerr << "Unable to load image " << path 
-                   << "! SDL_image Error: " << IMG_GetError() << std::endl;
-         return nullptr;
-     }
-     // Create texture from surface
-     newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-     SDL_FreeSurface(loadedSurface);
- 
-     if (newTexture == nullptr) {
-         std::cerr << "Unable to create texture from " << path 
-                   << "! SDL Error: " << SDL_GetError() << std::endl;
-     }
-     return newTexture;
- }
- 
+using namespace sf;
+
+int main()
+{
+    // Window
+    RenderWindow window(VideoMode({800, 600}), "SFML Platformer");
+    window.setFramerateLimit(120);
+
+    // Load textures
+    Texture idleTexture, moveTexture1, moveTexture2;
+    if (!idleTexture.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi.png") ||
+        !moveTexture1.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi_movimiento.png") ||
+        !moveTexture2.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi_movimiento_complemento.png"))
+    {
+        return -1;
+    }
+
+    // Player sprite
+    Sprite player(idleTexture);
+    {
+        FloatRect b = player.getLocalBounds();
+        player.setOrigin({ b.size.x / 2.f, b.size.y / 2.f });
+    }
+    player.setScale({ 0.5f, 0.5f });
+    player.setPosition({ 400.f, 300.f });
+
+    // Platforms
+    std::vector<RectangleShape> platforms;
+    auto makePlat = [&](float x, float y, float w, float h){
+        RectangleShape r({ w, h });
+        r.setPosition({ x, y });
+        r.setFillColor(Color(100, 100, 200));
+        platforms.push_back(r);
+    };
+    makePlat(  0, 580, 800, 20);
+    makePlat(100, 450, 200, 20);
+    makePlat(400, 350, 200, 20);
+    makePlat(600, 500, 150, 20);
+
+    // Physics constants
+    const float GRAVITY  = 1200.f;  // px/s²
+    const float MOVE_SPD =  300.f;  // px/s
+    const float JUMP_SPD =  600.f;  // px/s
+
+    Vector2f velocity{ 0.f, 0.f };
+    bool    onGround = false;
+
+    // Animation toggle
+    bool  toggleMoveFrame = false;
+    float toggleInterval  = 0.15f;
+    Clock toggleClock;
+
+    // Delta-time clock
+    Clock dtClock;
+
+    while (window.isOpen())
+    {
+        float dt = dtClock.restart().asSeconds();
+
+        // --- EVENTS ---
+        while (true)
+        {
+            std::optional<Event> e = window.pollEvent();
+            if (!e.has_value()) break;
+            if (e->is<Event::Closed>())
+                window.close();
+        }
+
+        // --- INPUT ---
+        bool isMoving = false;
+        velocity.x = 0.f;
+
+        if (Keyboard::isKeyPressed(Keyboard::Key::Left))
+        {
+            velocity.x = -MOVE_SPD;
+            player.setScale({ -0.5f, 0.5f });  // face left
+            isMoving = true;
+        }
+        else if (Keyboard::isKeyPressed(Keyboard::Key::Right))
+        {
+            velocity.x = MOVE_SPD;
+            player.setScale({  0.5f, 0.5f });  // face right
+            isMoving = true;
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::Key::Up) && onGround)
+        {
+            velocity.y = -JUMP_SPD;
+            onGround = false;
+        }
+
+        // --- ANIMATION ---
+        if (!isMoving)
+        {
+            toggleClock.restart();
+            player.setTexture(idleTexture);
+        }
+        else
+        {
+            if (toggleClock.getElapsedTime().asSeconds() >= toggleInterval)
+            {
+                toggleMoveFrame = !toggleMoveFrame;
+                toggleClock.restart();
+            }
+            player.setTexture(toggleMoveFrame ? moveTexture1 : moveTexture2);
+        }
+
+        // --- PHYSICS ---
+        velocity.y += GRAVITY * dt;
+
+        // Move X and handle collisions
+        player.move({ velocity.x * dt, 0.f });
+        {
+            FloatRect pb = player.getGlobalBounds();
+            for (auto &plat : platforms)
+            {
+                FloatRect pr = plat.getGlobalBounds();
+                bool hitX =
+                    pb.position.x + pb.size.x > pr.position.x &&
+                    pb.position.x < pr.position.x + pr.size.x &&
+                    pb.position.y + pb.size.y > pr.position.y &&
+                    pb.position.y < pr.position.y + pr.size.y;
+
+                if (hitX)
+                {
+                    if (velocity.x > 0.f)
+                        player.setPosition({ pr.position.x - pb.size.x/2.f, player.getPosition().y });
+                    else if (velocity.x < 0.f)
+                        player.setPosition({ pr.position.x + pr.size.x + pb.size.x/2.f, player.getPosition().y });
+
+                    velocity.x = 0.f;
+                    pb = player.getGlobalBounds();
+                }
+            }
+        }
+
+        // Move Y and handle collisions
+        player.move({ 0.f, velocity.y * dt });
+        onGround = false;
+        {
+            FloatRect pb = player.getGlobalBounds();
+            for (auto &plat : platforms)
+            {
+                FloatRect pr = plat.getGlobalBounds();
+                bool hitY =
+                    pb.position.x + pb.size.x > pr.position.x &&
+                    pb.position.x < pr.position.x + pr.size.x &&
+                    pb.position.y + pb.size.y > pr.position.y &&
+                    pb.position.y < pr.position.y + pr.size.y;
+
+                if (hitY)
+                {
+                    if (velocity.y > 0.f)
+                    {
+                        // land on top
+                        player.setPosition({ player.getPosition().x, pr.position.y - pb.size.y/2.f });
+                        onGround = true;
+                    }
+                    else if (velocity.y < 0.f)
+                    {
+                        // hit ceiling
+                        player.setPosition({ player.getPosition().x, pr.position.y + pr.size.y + pb.size.y/2.f });
+                    }
+                    velocity.y = 0.f;
+                    pb = player.getGlobalBounds();
+                }
+            }
+        }
+
+        // --- RENDER ---
+        window.clear(Color(200, 200, 255));
+        for (auto &plat : platforms)
+            window.draw(plat);
+        window.draw(player);
+        window.display();
+    }
+
+    return 0;
+}
