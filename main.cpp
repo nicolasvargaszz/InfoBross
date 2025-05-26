@@ -18,12 +18,12 @@ int main()
 
     // 2) Use openFromFile(...) for Font in SFML 3.0.1
     Font font;
-    if (!font.openFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/GAME_glm.ttf")) // this is the font, that is the path in my computer
+    if (!font.openFromFile("../Source/FotosMC/GAME_glm.ttf")) // this is the font, that is the path in my computer
         return -1; // if the font is not found, return -1, end of the program.
 
     // --- Music Setup ---
     Music backgroundMusic;
-    if (!backgroundMusic.openFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/musica_OOP.mp3"))  //this is a music that i have created.
+    if (!backgroundMusic.openFromFile("../Source/FotosMC/musica_OOP.mp3"))  //this is a music that i have created.
     {
         return -1; // Handle error: music file not found or couldn't be opened
     }
@@ -33,7 +33,7 @@ int main()
 
     // --- Dialogue Scene Assets ---
     Texture staticMathiTexture;
-    if (!staticMathiTexture.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/static_mathi.png")) //load the static mathi for the dialogue
+    if (!staticMathiTexture.loadFromFile("../Source/FotosMC/static_mathi.png")) //load the static mathi for the dialogue
     {
         return -1; // Handle error
     }
@@ -218,9 +218,9 @@ int main()
 
     // --- Gameplay Assets ---
     Texture idleTexture, moveTexture1, moveTexture2;
-    if (!idleTexture.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi.png") ||
-        !moveTexture1.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi_movimiento.png") ||
-        !moveTexture2.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/mathi_movimiento_complemento.png"))
+    if (!idleTexture.loadFromFile("../Source/FotosMC/mathi.png") ||
+        !moveTexture1.loadFromFile("../Source/FotosMC/mathi_movimiento.png") ||
+        !moveTexture2.loadFromFile("../Source/FotosMC/mathi_movimiento_complemento.png"))
     {
         return -1;
     }
@@ -235,7 +235,7 @@ int main()
 
     // --- CAFE Assets ---
     Texture cafeTexture;
-    if (!cafeTexture.loadFromFile("/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/Source/FotosMC/CAFE.jpeg")) 
+    if (!cafeTexture.loadFromFile("../Source/FotosMC/CAFE.jpeg")) 
     {
         std::cerr << "Failed to load CAFE.jpeg" << std::endl; 
         return -1; 
