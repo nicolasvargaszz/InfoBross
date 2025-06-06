@@ -1,1 +1,3 @@
-The game still in process
+In this branch we upload how to set up the game in MACOS
+
+ 
