@@ -1,0 +1,49 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe build active file",
+			"command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"-std=c++17",
+				"-DSFML_STATIC",
+				"${workspaceFolder}/src/*.cpp",
+				"-I${workspaceFolder}/library", 
+				"-I${workspaceFolder}/library/SFML-3.0.0/include",
+				"-o",
+				"${workspaceFolder}/bin/game.exe",
+				"-L${workspaceFolder}/library/SFML-3.0.0/lib",
+				"-lsfml-graphics-s",
+				"-lsfml-window-s",
+				"-lsfml-system-s",
+				"-lsfml-audio-s",
+				"-lsfml-network-s",
+				"-lopengl32",
+				"-lfreetype",
+				"-lwinmm",
+				"-lgdi32",
+				"-lflac",
+				"-lvorbisenc",
+				"-lvorbisfile",
+				"-lvorbis",
+				"-logg",
+				"-lws2_32"
+				// "-mwindows" // Uncomment this to hide console window
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: C:\\msys64\\ucrt64\\bin\\g++.exe"
+		}
+	]
+}
