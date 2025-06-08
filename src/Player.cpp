@@ -79,55 +79,64 @@ void Player::handleInput() {
 void Player::applyPhysics(float dt, const TiledMap& map) {
     velocity.y += GRAVITY * dt;
 
+    // Horizontal movement
     sprite.move({velocity.x * dt, 0.f});
     if (map.isColliding(sprite.getGlobalBounds())) {
         sprite.move({-velocity.x * dt, 0.f});
     }
 
+    // Vertical movement
     float dy = velocity.y * dt;
     sprite.move({0.f, dy});
 
     if (map.isColliding(sprite.getGlobalBounds())) {
+        // Revert vertical move
         sprite.move({0.f, -dy});
+
+        // If we were moving downward, we must be on ground
         if (velocity.y > 0.f) {
             onGround = true;
         } else {
             onGround = false;
         }
-        velocity.y = 0.f;
+
+        velocity.y = 0.f; // Reset vertical velocity if colliding
     } else {
-        onGround = false;
-    }
-
-    sf::FloatRect bounds = sprite.getGlobalBounds();
-    sf::FloatRect feetArea({bounds.position.x, bounds.position.y + bounds.size.y - 5.f}, {bounds.size.x, 5.f});
-
-    if (map.isColliding(feetArea)) {
-        onGround = true;
+        onGround = false; 
     }
 }
 
 
-void Player::update(float dt) {
+void Player::update(float dt)
+{
+    static bool wasOnGround = true;
+    bool justLeftGround = (wasOnGround && !onGround && velocity.y < 0.f);
+    bool justLanded    = (!wasOnGround && onGround);
+
+    if (justLeftGround) {
+        setAnimation("jump");
+        currentAnimation->reset();
+    }
+
     if (!onGround) {
-        // Mostrar solo el primer frame de la animación de salto (no avanzar)
-        if (currentAnimation != &animations["jump"]) {
-            setAnimation("jump");
-            currentAnimation->reset();
-        }
+        // Continue jump animation
+        currentAnimation->update(dt);
         sprite.setTextureRect(currentAnimation->getCurrentFrame());
     } else {
-        if (isMoving) {
+        // Landed or was on ground
+        if (isMoving)
             setAnimation("walk");
-        } else {
+        else
             setAnimation("idle");
-        }
-        // En estas animaciones sí actualizamos
+
         currentAnimation->update(dt);
         sprite.setTextureRect(currentAnimation->getCurrentFrame());
     }
-    // Ajustar escala para mirar derecha o izquierda
-    sprite.setScale({facingRight ? -SCALE : SCALE, SCALE});;
+
+    wasOnGround = onGround;
+
+    // Flip sprite
+    sprite.setScale({facingRight ? -SCALE : SCALE, SCALE});
 }
 
 void Player::render(sf::RenderWindow& window) {
