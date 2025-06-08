@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include "../include/TiledMap.h"
+#include "../include/Player.h"
 
 using namespace sf;
 
@@ -23,12 +24,12 @@ int main()
 
     // --- Font ---
     Font font;
-    if (!font.openFromFile("../FotosMC/GAME_glm.ttf"))
+    if (!font.openFromFile("../assets/font/GAME_glm.ttf"))
         return -1;
 
     // --- Music ---
     /*Music backgroundMusic;
-    if (!backgroundMusic.openFromFile("../FotosMC/musica_OOP.mp3"))
+    if (!backgroundMusic.openFromFile("../assets/music/musica_OOP.mp3"))
         return -1;
     backgroundMusic.setLooping(true);
     backgroundMusic.setVolume(1.f);
@@ -36,7 +37,7 @@ int main()
 
     // --- Dialogue Scene Assets ---
     Texture staticMathiTexture;
-    if (!staticMathiTexture.loadFromFile("../FotosMC/static_mathi.png"))
+    if (!staticMathiTexture.loadFromFile("../assets/sprites/static_mathi.png"))
         return -1;
     Sprite staticMathiSprite(staticMathiTexture);
     staticMathiSprite.setScale({-0.5f, 0.5f});
@@ -193,23 +194,24 @@ int main()
     }
 
     // --- Gameplay Assets ---
-    Texture idleTexture, moveTexture1, moveTexture2;
-    if (!idleTexture.loadFromFile("../FotosMC/mathi.png") ||
-        !moveTexture1.loadFromFile("../FotosMC/mathi_movimiento.png") ||
-        !moveTexture2.loadFromFile("../FotosMC/mathi_movimiento_complemento.png"))
+    Texture playerTexture;
+    if (!playerTexture.loadFromFile("../assets/sprites/static_mathi.png")) {
+        std::cerr << "Failed to load player texture" << std::endl;
         return -1;
-
-    Sprite player(idleTexture);
-    {
-        FloatRect b_player = player.getLocalBounds();
-        player.setOrigin({b_player.size.x * 0.5f, b_player.size.y * 0.5f});
     }
-    player.setScale({0.1f, 0.1f});
+
+    Player player(playerTexture);
+    if (!player.loadAnimation("idle", "../assets/sprites/static_mathi.png", 1, 0.5f) ||
+        !player.loadAnimation("walk", "../assets/sprites/move_mathi.png", 4, 0.15f) ||
+        !player.loadAnimation("jump", "../assets/sprites/jump_mathi.png", 1, 0.1f)) {
+        std::cerr << "Error loading player animations" << std::endl;
+        return -1;
+    }
     player.setPosition({50.f, 500.f});
 
     // --- CAFE Assets ---
     Texture cafeTexture;
-    if (!cafeTexture.loadFromFile("../FotosMC/CAFE.jpeg"))
+    if (!cafeTexture.loadFromFile("../assets/sprites/CAFE.jpeg"))
         return -1;
     std::vector<Sprite> cafeItems;
     int cafeScore = 0;
@@ -226,13 +228,6 @@ int main()
 
     View view = window.getDefaultView();
 
-    // --- Físicas ---
-    const float GRAVITY = 1100.f;
-    const float MOVE_SPD = 200.f;
-    const float JUMP_SPD = 650.f;
-    Vector2f velocity{0.f, 0.f};
-    bool onGround = false;
-    bool toggleMoveFrame = false;
     float toggleInterval = 0.15f;
     Clock toggleClock;
     Clock dtClock;
@@ -243,10 +238,9 @@ int main()
     // --- Main Game Loop ---
     while (window.isOpen())
     {
-        float dt = dtClock.restart().asSeconds();
+       float dt = dtClock.restart().asSeconds();
         if (gameWon)
             dt = 0;
-
         std::optional<Event> evOpt_main = window.pollEvent();
         while (evOpt_main.has_value())
         {
@@ -261,84 +255,16 @@ int main()
             }
             evOpt_main = window.pollEvent();
         }
-
         if (!gameWon)
         {
-            bool isMoving = false;
-            velocity.x = 0.f;
+            player.handleInput();
+            player.applyPhysics(dt, tiledMap);
+            player.update(dt);
 
-            if (Keyboard::isKeyPressed(Keyboard::Key::Left))
-            {
-                velocity.x = -MOVE_SPD;
-                player.setScale({0.1f, 0.1f});
-                isMoving = true;
-            }
-            else if (Keyboard::isKeyPressed(Keyboard::Key::Right))
-            {
-                velocity.x = MOVE_SPD;
-                player.setScale({-0.1f, 0.1f});
-                isMoving = true;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::Key::Up) && onGround)
-            {
-                velocity.y = -JUMP_SPD;
-                onGround = false;
-            }
-
-            if (!isMoving)
-            {
-                toggleClock.restart();
-                player.setTexture(idleTexture, true);
-                FloatRect b_player = player.getLocalBounds();
-                player.setOrigin({b_player.size.x * 0.5f, b_player.size.y * 0.5f});
-            }
-            else
-            {
-                if (toggleClock.getElapsedTime().asSeconds() >= toggleInterval)
-                {
-                    toggleMoveFrame = !toggleMoveFrame;
-                    toggleClock.restart();
-                }
-                player.setTexture(toggleMoveFrame ? moveTexture1 : moveTexture2, true);
-                FloatRect b_player = player.getLocalBounds();
-                player.setOrigin({b_player.size.x * 0.5f, b_player.size.y * 0.5f});
-            }
-
-            // --- Físicas y colisiones ---
-            velocity.y += GRAVITY * dt;
-
-            // Movimiento horizontal
-            player.move({velocity.x * dt, 0.f});
-            if (tiledMap.isColliding(player.getGlobalBounds()))
-            {
-                player.move({-velocity.x * dt, 0.f});  // Retrocede si colisiona
-            }
-
-            // Movimiento vertical
-            player.move({0.f, velocity.y * dt});
-            if (tiledMap.isColliding(player.getGlobalBounds()))
-            {
-                player.move({0.f, -velocity.y * dt});  // Retrocede si colisiona
-                onGround = true;  // Si colisiona hacia abajo, el personaje está en el suelo
-                velocity.y = 0.f;
-            }
-            else
-            {
-                onGround = false;
-            }
-
-            // --- Colisión con el mapa Tiled ---
-            // Descomenta si quieres colisión con el mapa Tiled
-            // if (tiledMap.isColliding(player.getGlobalBounds())) {
-            //     // Corrige la posición o impide el movimiento según tu lógica
-            // }
-
-            // --- CAFE Collection ---
+            // Recolección de cafe
             for (size_t i = 0; i < cafeItems.size(); ++i)
             {
-                FloatRect playerBounds = player.getGlobalBounds();
-                FloatRect cafeBounds = cafeItems[i].getGlobalBounds();
-                if (playerBounds.findIntersection(cafeBounds).has_value())
+                if (player.getBounds().findIntersection(cafeItems[i].getGlobalBounds()).has_value())
                 {
                     cafeItems.erase(cafeItems.begin() + i);
                     cafeScore++;
@@ -346,12 +272,11 @@ int main()
                     --i;
                 }
             }
-
             if (cafeScore >= CAFE_TO_WIN)
                 gameWon = true;
         }
 
-        // --- Cámara ---
+        // --- Camera ---
         view.setCenter(player.getPosition());
         //window.setView(view);
         sf::Vector2f halfViewSize = view.getSize() / 2.f;
@@ -374,7 +299,7 @@ int main()
         {
             for (auto &cafe : cafeItems)
                 window.draw(cafe);
-            window.draw(player);
+            player.render(window);
         }
         window.draw(cafeScoreText);
         if (gameWon)
