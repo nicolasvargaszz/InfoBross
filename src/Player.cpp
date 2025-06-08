@@ -1,6 +1,5 @@
 #include "../include/Player.h"
 #include "../include/TiledMap.h"  
-#include <iostream>
 
 Player::Player(const sf::Texture& texture)
     : sprite(texture), velocity(0.f, 0.f), onGround(false), facingRight(true), isMoving(false), currentAnimation(nullptr) {}
@@ -127,7 +126,6 @@ void Player::update(float dt) {
         currentAnimation->update(dt);
         sprite.setTextureRect(currentAnimation->getCurrentFrame());
     }
-    std::cout << "onGround: " << onGround << std::endl;
     // Ajustar escala para mirar derecha o izquierda
     sprite.setScale({facingRight ? -SCALE : SCALE, SCALE});;
 }

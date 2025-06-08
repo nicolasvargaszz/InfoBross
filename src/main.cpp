@@ -28,12 +28,12 @@ int main()
         return -1;
 
     // --- Music ---
-    /*Music backgroundMusic;
+    Music backgroundMusic;
     if (!backgroundMusic.openFromFile("../assets/music/musica_OOP.mp3"))
         return -1;
     backgroundMusic.setLooping(true);
-    backgroundMusic.setVolume(1.f);
-    backgroundMusic.play();*/
+    backgroundMusic.setVolume(20.f);
+    backgroundMusic.play();
 
     // --- Dialogue Scene Assets ---
     Texture staticMathiTexture;
