@@ -32,8 +32,8 @@ private:
     Animation* currentAnimation;
 
     // Constantes
-    const float MOVE_SPEED = 120.f;
-    const float JUMP_SPEED = 250.f;
+    const float MOVE_SPEED = 170.f;
+    const float JUMP_SPEED = 350.f;
     const float GRAVITY = 500.f;
     const float SCALE = 1.75f;
 };
