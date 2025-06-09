@@ -2,7 +2,6 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
-#include <unordered_set>
 
 bool intersects(const sf::FloatRect& a, const sf::FloatRect& b)
 {
@@ -12,91 +11,128 @@ bool intersects(const sf::FloatRect& a, const sf::FloatRect& b)
            a.position.y + a.size.y > b.position.y;
 }
 
-TiledMap::TiledMap(const std::string& jsonMapPath, const std::string& texturePath)
+TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string>& texturePaths)
 {
-    // 1) Load the texture (your spritesheet)
-    if (!mapTexture.loadFromFile(texturePath))
+    // Cargar todas las texturas tileset
+    for (const auto& path : texturePaths)
     {
-        std::cerr << "Failed to load " << texturePath << std::endl;
-        return;
+        sf::Texture texture;
+        if (!texture.loadFromFile(path))
+        {
+            std::cerr << "Error loading texture: " << path << std::endl;
+            continue;
+        }
+        tilesetTextures.push_back(texture);
+        std::cout << "Cargado tileset: " << path << std::endl;
     }
-    std::cout << "Loaded " << texturePath << " OK!\n";
 
-    // 2) Open and parse the JSON map file
+    // Cargar textura especial de puerta (Idle.png)
+    if (!puertaTexture.loadFromFile("../assets/tilesets/Idle.png"))
+    {
+        std::cerr << "No se pudo cargar Idle.png (puerta)" << std::endl;
+    }
+
+    // Abrir y parsear JSON
     std::ifstream file(jsonMapPath);
     if (!file.is_open())
     {
         std::cerr << "Could not open " << jsonMapPath << std::endl;
         return;
     }
-    std::cout << "Opened " << jsonMapPath << " OK!\n";
 
     nlohmann::json mapData;
     file >> mapData;
 
-    // 3) Get basic map info
     tileWidth  = mapData["tilewidth"];
     tileHeight = mapData["tileheight"];
     mapWidth   = mapData["width"];
     mapHeight  = mapData["height"];
 
-    // 4) Assume the tile indices are in layers[0]["data"]
-    if (!mapData.contains("layers") || mapData["layers"].empty())
+    // Obtener firstgid de cada tileset para calcular índices locales
+    std::vector<int> firstGIDs;
+    for (const auto& tileset : mapData["tilesets"])
     {
-        std::cerr << "No layers found in the JSON map\n";
-        return;
+        firstGIDs.push_back(tileset["firstgid"]);
     }
 
-    auto dataArray = mapData["layers"][0]["data"];
-    if (dataArray.empty())
-    {
-        std::cout << "Layer data is empty\n";
-        return;
-    }
-
-    // 5) Generate sprites for each non-zero tile ID
-    for (int i = 0; i < static_cast<int>(dataArray.size()); ++i)
-    {
-        int rawID = dataArray[i];
-        if (rawID > 0) // Zero means no tile
+    auto getTilesetIndex = [&](int gid) {
+        for (int i = int(firstGIDs.size()) - 1; i >= 0; --i)
         {
-            int tileID = rawID - 1; // Convert Tiled's 1-based index to 0-based
-            // The number of tiles across the spritesheet
-            int sheetCols = mapTexture.getSize().x / tileWidth;
+            if (gid >= firstGIDs[i]) return i;
+        }
+        return 0;
+    };
 
-            // Sub-rectangle within spritesheet
-            int sx = (tileID % sheetCols) * tileWidth;
-            int sy = (tileID / sheetCols) * tileHeight;
+    // Procesar capas y tiles
+    for (const auto& layer : mapData["layers"])
+    {
+        if (!layer.contains("data") || !layer["data"].is_array()) continue;
 
-            sf::Sprite tile(mapTexture);
-            tile.setTextureRect(sf::IntRect(
-                sf::Vector2i(sx, sy),
-                sf::Vector2i(tileWidth, tileHeight)));
+        auto dataArray = layer["data"];
+        for (int i = 0; i < static_cast<int>(dataArray.size()); ++i)
+        {
+            int rawID = dataArray[i];
+            if (rawID <= 0) continue;
 
-            // Position in the world
+            int tilesetIndex = getTilesetIndex(rawID);
+            int firstGID = firstGIDs[tilesetIndex];
+            int localID = rawID - firstGID;
+
+            // Por defecto usar tileset
+            sf::Sprite tile(puertaTexture);
+
+            // Detectar puerta
+            if (rawID == 290 || rawID == 291)
+            {
+                tile.setTextureRect(sf::IntRect({0, 0}, {46, 56}));
+
+                int x = i % mapWidth;
+                int y = i / mapWidth;
+
+                float posX = float(x * tileWidth);
+                float posY = float((y + 1) * tileHeight - 56);
+
+                tile.setPosition({posX, posY});
+                tiles.push_back(tile);
+
+                if (rawID == 291)  // Puerta de entrada
+                {
+                    entradaPosition = sf::Vector2f(posX, posY);
+                }
+                else if (rawID == 290) // Puerta de salida
+                {
+                    salidaRects.push_back(sf::FloatRect(sf::Vector2f(posX, posY), sf::Vector2f(46.f, 56.f)));
+                }
+                continue;
+            }
+
+            if (tilesetIndex >= int(tilesetTextures.size())) continue;
+            const sf::Texture& tex = tilesetTextures[tilesetIndex];
+
+            int texWidth = tex.getSize().x / tileWidth;
+            int sx = (localID % texWidth) * tileWidth;
+            int sy = (localID / texWidth) * tileHeight;
+
+            tile.setTexture(tex);
+            tile.setTextureRect(sf::IntRect({sx, sy}, {tileWidth, tileHeight}));
+
             int x = i % mapWidth;
             int y = i / mapWidth;
-            tile.setPosition(sf::Vector2f(
-                float(x * tileWidth),
-                float(y * tileHeight)));
+            tile.setPosition({float(x * tileWidth), float(y * tileHeight)});
 
             tiles.push_back(tile);
 
-            if (solidGIDs.find(tileID) != solidGIDs.end())
+            // Solo los tiles de la primera capa (i.e. la primera que contenga sólidos) son sólidos
+            if (solidGIDs.find(rawID - 1) != solidGIDs.end())
             {
                 solidTiles.push_back(tile);
-
-                // Agrega el rectángulo sólido
-                sf::FloatRect rect;
-                rect.position = sf::Vector2f(float(x * tileWidth), float(y * tileHeight));
-                rect.size = sf::Vector2f(float(tileWidth), float(tileHeight));
-                solidRects.push_back(rect);
+                solidRects.emplace_back(sf::Vector2f(float(x * tileWidth), float(y * tileHeight)), sf::Vector2f(float(tileWidth), float(tileHeight)));
             }
         }
     }
 
-    std::cout << "TiledMap loaded " << tiles.size() << " tiles, "
-              << solidTiles.size() << " solid tiles.\n";
+    std::cout << "TiledMap cargado con " << tiles.size() << " tiles y "
+              << solidTiles.size() << " sólidos.\n";
 }
 
 bool TiledMap::isColliding(const sf::FloatRect& bounds) const
@@ -109,13 +145,31 @@ bool TiledMap::isColliding(const sf::FloatRect& bounds) const
     return false;
 }
 
-// 6) Implement the draw method
-void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
+bool TiledMap::isTouchingSalida(const sf::FloatRect& bounds) const
 {
-    for (auto& tile : tiles)
-        target.draw(tile, states);
+    for (const auto& rect : salidaRects)
+    {
+        if (intersects(bounds, rect)){
+            return true;
+        }
+    }
+    return false;
 }
 
-sf::Vector2f TiledMap::getPixelSize() const {
-        return sf::Vector2f(mapWidth * tileWidth, mapHeight * tileHeight);
+sf::Vector2f TiledMap::getEntradaPosition() const
+{
+    return entradaPosition;
+}
+
+void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    for (const auto& tile : tiles)
+    {
+        target.draw(tile, states);
+    }
+}
+
+sf::Vector2f TiledMap::getPixelSize() const
+{
+    return sf::Vector2f(static_cast<float>(mapWidth * tileWidth), static_cast<float>(mapHeight * tileHeight));
 }

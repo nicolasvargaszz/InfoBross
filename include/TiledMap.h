@@ -7,35 +7,42 @@
 class TiledMap : public sf::Drawable
 {
 public:
-    // Pass paths to the JSON map file and the spritesheet
-    TiledMap(const std::string& jsonMapPath, const std::string& texturePath);
+    // Constructor recibe ruta del mapa JSON y vector con rutas de texturas (tilesets)
+    TiledMap(const std::string& jsonMapPath, const std::vector<std::string>& texturePaths);
 
-    // Add this to obtain collisions
-    const std::vector<sf::Sprite>& getSolidTiles() const { return solidTiles; }
-    // Verify collision 
+    // Para detectar si el jugador está tocando la puerta de salida
+    bool isTouchingSalida(const sf::FloatRect& bounds) const;
+
+    // Para obtener la posición de la puerta de entrada donde aparece el jugador
+    sf::Vector2f getEntradaPosition() const;
+
+    // Colisión con tiles sólidos
     bool isColliding(const sf::FloatRect& bounds) const;
 
     sf::Vector2f getPixelSize() const;
-    
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 private:
-    int mapWidth;   
+    int mapWidth;
     int mapHeight;
     int tileWidth;
     int tileHeight;
 
-    std::vector<sf::FloatRect> solidRects;
-    sf::Texture mapTexture;
-    std::vector<sf::Sprite> tiles;
-    
-    std::vector<sf::Sprite> solidTiles;
-    std::unordered_set<int> solidGIDs = { /* IDs solid */ 
+    sf::Texture puertaTexture;
+    std::vector<sf::Texture> tilesetTextures;
+
+    std::vector<sf::Sprite> tiles;           // Todos los tiles para dibujar
+    std::vector<sf::Sprite> solidTiles;      // Tiles sólidos para colisión
+    std::vector<sf::FloatRect> solidRects;  // Rectángulos sólidos
+
+    sf::Vector2f entradaPosition;            // Posición de la puerta de entrada
+    std::vector<sf::FloatRect> salidaRects;  // Rectángulos de puertas de salida
+
+    std::unordered_set<int> solidGIDs = {
         20,21,22,24,26,27,29,30,32,33,35,
         39,41,43,45,46,48,49,51,52,54,55,
         58,59,60,62,83,84,86,87,89,90,92,
         93,96,97,98,100,102,103,105,106,
         108,109,111,112
     };
-
-    // Draw override (required by sf::Drawable)
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

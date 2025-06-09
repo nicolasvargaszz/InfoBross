@@ -10,15 +10,28 @@
 #include "../include/cafe.h"
 #include "../include/TiledMap.h"
 #include "../include/Player.h"
+#include "../include/LevelManager.h"
+
 
 using namespace sf;
+
+// Assets paths
+std::vector<std::string> maps = {
+    "C:/Users/GIGABYTE/Desktop/Mapas/Mapa2.json",
+    "../assets/maps/map1.json"
+};
+std::vector<std::string> tilesetTextures = {
+    "../assets/tilesets/Terrain (32x32).png",
+    "../assets/tilesets/Decorations (32x32).png",
+    "../assets/tilesets/Idle.png"
+};
 
 int main()
 {
     // --- Tiled Map ---
-    TiledMap tiledMap("../assets/maps/map1.json", "../Kings and Pigs/Sprites/Terrain (32x32).png");
+    LevelManager levelManager(maps, tilesetTextures);
 
-    sf::Vector2f mapSize = tiledMap.getPixelSize();
+    sf::Vector2f mapSize = (*levelManager.getCurrentMap()).getPixelSize();
     VideoMode mode({
         static_cast<unsigned int>(std::min(mapSize.x, 1280.f)),
         static_cast<unsigned int>(std::min(mapSize.y, 720.f))
@@ -320,8 +333,15 @@ int main()
         {
             // Actualiza jugador
             player.handleInput();
-            player.applyPhysics(dt, tiledMap);
+            player.applyPhysics(dt, *levelManager.getCurrentMap());
             player.update(dt);
+
+            if (levelManager.getCurrentMap()->isTouchingSalida(player.getBounds()))
+            {
+                std::cout << "Cambiando al siguiente nivel" << std::endl;
+                levelManager.loadNextLevel();
+            }
+
 
             // 1) Recolección usando vector<Sprite> (cafeItems)
             for (size_t i = 0; i < cafeItems.size(); ++i)
@@ -378,8 +398,7 @@ int main()
         // --- Render ---
         window.clear({180, 220, 255});
 
-        // Dibuja el mapa Tiled si lo deseas
-        window.draw(tiledMap);
+        levelManager.draw(window);
 
         if (!gameWon)
         {

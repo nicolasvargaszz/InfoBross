@@ -18,16 +18,16 @@ std::vector<Cafe> createCafes()
     // Each Cafe uses the static texture above through the constructor.
     std::vector<Cafe> cafes;
     cafes.emplace_back(sf::Vector2f(60.f, 500.f));
-    cafes.emplace_back(sf::Vector2f(70.f, 400.f));
-    cafes.emplace_back(sf::Vector2f(80.f, 300.f));
-    cafes.emplace_back(sf::Vector2f(65.f, 290.f));
+    //cafes.emplace_back(sf::Vector2f(70.f, 400.f));
+    //cafes.emplace_back(sf::Vector2f(80.f, 300.f));
+    //cafes.emplace_back(sf::Vector2f(65.f, 290.f));
     // Add as many as you want—
-    cafes.emplace_back(sf::Vector2f(90.f, 500.f));
-    cafes.emplace_back(sf::Vector2f(120.f, 480.f));
+    //cafes.emplace_back(sf::Vector2f(90.f, 500.f));
+    //cafes.emplace_back(sf::Vector2f(120.f, 480.f));
     cafes.emplace_back(sf::Vector2f(140.f, 480.f));
-    cafes.emplace_back(sf::Vector2f(160.f, 480.f));
-    cafes.emplace_back(sf::Vector2f(180.f, 480.f));
-    cafes.emplace_back(sf::Vector2f(200.f, 480.f));
+    //cafes.emplace_back(sf::Vector2f(160.f, 480.f));
+    //cafes.emplace_back(sf::Vector2f(180.f, 480.f));
+    //.emplace_back(sf::Vector2f(200.f, 480.f));
 
     return cafes;
 }
