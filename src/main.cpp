@@ -17,8 +17,8 @@ using namespace sf;
 
 // Assets paths
 std::vector<std::string> maps = {
-    "C:/Users/GIGABYTE/Desktop/Mapas/Mapa2.json",
-    "../assets/maps/map1.json"
+    "../assets/maps/Mapa2.json",
+    "../assets/maps/porfavor.json"
 };
 std::vector<std::string> tilesetTextures = {
     "../assets/tilesets/Terrain (32x32).png",
@@ -266,7 +266,7 @@ int main()
         std::cerr << "Error loading player animations" << std::endl;
         return -1;
     }
-    player.setPosition({50.f, 500.f});
+    player.setPosition((*levelManager.getCurrentMap()).getEntradaPosition());
 
     Texture cafeTexture;
     if (!cafeTexture.loadFromFile("../assets/sprites/CAFE.png"))
@@ -335,11 +335,24 @@ int main()
             player.handleInput();
             player.applyPhysics(dt, *levelManager.getCurrentMap());
             player.update(dt);
+            
+            // Actualiza Puertas
+            levelManager.getCurrentMap()->getPuertaSalida().update(dt);
 
-            if (levelManager.getCurrentMap()->isTouchingSalida(player.getBounds()))
+            // Control the time for the animation of the door
+            static bool waitingForDoor = false;
+            static sf::Clock doorTimer;
+            if (!waitingForDoor && levelManager.getCurrentMap()->isTouchingSalida(player.getBounds()))
             {
-                std::cout << "Cambiando al siguiente nivel" << std::endl;
+                levelManager.getCurrentMap()->getPuertaSalida().play();
+                doorTimer.restart();
+                waitingForDoor = true;
+            }
+            else if (waitingForDoor && doorTimer.getElapsedTime().asSeconds() > 0.5f)
+            {
                 levelManager.loadNextLevel();
+                player.setPosition(levelManager.getCurrentMap()->getEntradaPosition());
+                waitingForDoor = false;
             }
 
 
@@ -400,6 +413,10 @@ int main()
 
         levelManager.draw(window);
 
+        // Door animation
+        window.draw(*levelManager.getCurrentMap()); // TiledMap
+        window.draw(levelManager.getCurrentMap()->getPuertaSalida());
+
         if (!gameWon)
         {
             // Dibuja cafés antiguos (Sprites)
@@ -418,8 +435,9 @@ int main()
         window.draw(cafeScoreText);
 
         // Mensaje de victoria si ya ganaste
-        if (gameWon)
+        if (gameWon){
             window.draw(winMessageText);
+        }
 
         window.display();
     }

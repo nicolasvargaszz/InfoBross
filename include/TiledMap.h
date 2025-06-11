@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include "AnimatedDoor.h"
 
 class TiledMap : public sf::Drawable
 {
@@ -22,11 +23,25 @@ public:
     sf::Vector2f getPixelSize() const;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
+
+    // Door
+    void update(float dt);
+    AnimatedDoor& getPuertaEntrada();
+    AnimatedDoor& getPuertaSalida();
+
 private:
     int mapWidth;
     int mapHeight;
     int tileWidth;
     int tileHeight;
+
+    // Door
+    AnimatedDoor puertaEntrada;
+    AnimatedDoor puertaSalida;
+    Animation animEntrada;
+    Animation animSalida;
+    sf::Texture texEntrada;
+    sf::Texture texSalida;
 
     sf::Texture puertaTexture;
     std::vector<sf::Texture> tilesetTextures;

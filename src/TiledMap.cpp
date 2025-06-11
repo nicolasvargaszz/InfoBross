@@ -95,15 +95,41 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
                 tile.setPosition({posX, posY});
                 tiles.push_back(tile);
 
-                if (rawID == 291)  // Puerta de entrada
-                {
-                    entradaPosition = sf::Vector2f(posX, posY);
+                if (rawID == 291) {
+                    entradaPosition = { posX, posY };
+
+                    if (!texEntrada.loadFromFile("../assets/tilesets/Closiong (46x56).png")) {
+                        std::cerr << "No se pudo cargar EntradaAnim.png\n";
+                    } else {
+                        animEntrada = Animation(0.1f);
+                        animEntrada.setSpriteSheet(texEntrada);
+                        for (int i = 0; i < 4; ++i){
+                            animEntrada.addFrame(sf::IntRect({i * 46, 0}, {46, 56}));
+                        }
+                        puertaEntrada.setAnimation(&animEntrada);
+                        puertaEntrada.setPosition({posX, posY});
+                    }
+                    continue;
                 }
-                else if (rawID == 290) // Puerta de salida
-                {
+
+                // Al cargar puerta de salida (rawID == 290)
+                if (rawID == 290) {
                     salidaRects.push_back(sf::FloatRect(sf::Vector2f(posX, posY), sf::Vector2f(46.f, 56.f)));
+
+                    if (!texSalida.loadFromFile("../assets/tilesets/Opening (46x56).png")) {
+                        std::cerr << "No se pudo cargar SalidaAnim.png\n";
+                    } else {
+                        animSalida = Animation(0.1f);
+                        animSalida.setSpriteSheet(texSalida);
+                        for (int i = 0; i < 6; ++i)
+                            animSalida.addFrame(sf::IntRect({i * 46, 0}, {46, 56}));
+
+                        puertaSalida.setAnimation(&animSalida);
+                        puertaSalida.setPosition({posX, posY});
+                    }
+
+                    continue;
                 }
-                continue;
             }
 
             if (tilesetIndex >= int(tilesetTextures.size())) continue;
@@ -161,15 +187,28 @@ sf::Vector2f TiledMap::getEntradaPosition() const
     return entradaPosition;
 }
 
-void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    for (const auto& tile : tiles)
-    {
-        target.draw(tile, states);
-    }
-}
-
 sf::Vector2f TiledMap::getPixelSize() const
 {
     return sf::Vector2f(static_cast<float>(mapWidth * tileWidth), static_cast<float>(mapHeight * tileHeight));
+}
+
+void TiledMap::update(float dt) {
+    puertaEntrada.update(dt);
+    puertaSalida.update(dt);
+}
+
+void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    for (const auto& tile : tiles)
+        target.draw(tile, states);
+
+    target.draw(puertaEntrada, states);
+    target.draw(puertaSalida, states);
+}
+
+AnimatedDoor& TiledMap::getPuertaEntrada() {
+    return puertaEntrada;
+}
+
+AnimatedDoor& TiledMap::getPuertaSalida() {
+    return puertaSalida;
 }

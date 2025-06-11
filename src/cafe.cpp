@@ -1,4 +1,3 @@
-//// filepath: /Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/src/cafe.cpp
 #include "../include/cafe.h"
 #include <iostream>
 
