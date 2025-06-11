@@ -11,6 +11,7 @@
 #include "../include/TiledMap.h"
 #include "../include/Player.h"
 #include "../include/LevelManager.h"
+#include "../include/FadeTransition.h"
 
 
 using namespace sf;
@@ -26,17 +27,20 @@ std::vector<std::string> tilesetTextures = {
     "../assets/tilesets/Idle.png"
 };
 
+
 int main()
 {
     // --- Tiled Map ---
     LevelManager levelManager(maps, tilesetTextures);
-
+    
     sf::Vector2f mapSize = (*levelManager.getCurrentMap()).getPixelSize();
     VideoMode mode({
         static_cast<unsigned int>(std::min(mapSize.x, 1280.f)),
         static_cast<unsigned int>(std::min(mapSize.y, 720.f))
     });
     RenderWindow window(mode, "INFOBROS");
+    
+    FadeTransition fade(sf::Vector2u(mapSize), sf::seconds(1));
     window.setFramerateLimit(60);
 
     // --- Font ---
@@ -335,7 +339,8 @@ int main()
             player.handleInput();
             player.applyPhysics(dt, *levelManager.getCurrentMap());
             player.update(dt);
-            
+            fade.update();
+
             // Actualiza Puertas
             levelManager.getCurrentMap()->getPuertaSalida().update(dt);
 
@@ -346,6 +351,8 @@ int main()
             {
                 levelManager.getCurrentMap()->getPuertaSalida().play();
                 doorTimer.restart();
+                // Shadow while change level
+                fade.start();
                 waitingForDoor = true;
             }
             else if (waitingForDoor && doorTimer.getElapsedTime().asSeconds() > 0.5f)
@@ -354,7 +361,6 @@ int main()
                 player.setPosition(levelManager.getCurrentMap()->getEntradaPosition());
                 waitingForDoor = false;
             }
-
 
             // 1) Recolección usando vector<Sprite> (cafeItems)
             for (size_t i = 0; i < cafeItems.size(); ++i)
@@ -438,6 +444,9 @@ int main()
         if (gameWon){
             window.draw(winMessageText);
         }
+        
+        // Draw the Fade
+        fade.draw(window);
 
         window.display();
     }
