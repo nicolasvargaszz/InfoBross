@@ -2,4 +2,3 @@ This is how to set up the game in a Windows machine.
 
 The source code is the same, the execution of the file may differ depending on the OS
 
-Hola me llamo NicolA VERGAS, SOY UN COMPAÑERO QUE SOLO SABE QUEJARSE, DECIR QUE OTROS NO TRABAJAN Y LO UNICO QUE HAGO ES SER UN MAPACHE OBEDIENTE A MERCED DE CHATGPT. LITERAL LO DE TRABAJAR NO ME LA SE Y EL 90% DE MI TRABJO LO HIZO UNA INTELIGENCIA ARTIFICIAL QUE TODVIA ESTA EN DESARROLLO
