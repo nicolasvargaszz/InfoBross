@@ -1,0 +1,133 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Mapa2.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Todos los archivos (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "C:/Mapas/Decorations (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Mapas/Idle_Enter.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Mapas/Idle_Exit.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Mapas/Terrain (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Decorations (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Idle_Enter.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Idle_Exit.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Mapa2.json": {
+            "scale": 0.45125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 480.8864265927978,
+                "y": 319.11357340720224
+            }
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Terrain (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/mapa1.json": {
+            "scale": 0.8352083333333333,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 480.1197306061362,
+                "y": 319.6807183836369
+            }
+        },
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/mapa1real.json": {
+            "scale": 0.8352083333333333,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 478.9224245447743,
+                "y": 319.6807183836369
+            }
+        },
+        "Decorations (32x32).tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Idle_Enter.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Idle_Exit.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Mapa2.json": {
+            "scale": 0.92,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 163.04347826086956,
+                "y": 192.93478260869566
+            }
+        },
+        "Terrain (32x32).tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "enemigo_test_no_es_el_enemigo_real.tsx": {
+            "scaleInDock": 0.4207,
+            "scaleInEditor": 0.3255
+        },
+        "pixil-frame-0.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "porfavor.json": {
+            "scale": 0.5695,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 478.4899034240562,
+                "y": 319.5785776997366
+            }
+        }
+    },
+    "last.imagePath": "/Users/nicolasvargas/Downloads/evil.enemy.very.evil",
+    "openFiles": [
+        "Terrain (32x32).tsx",
+        "Decorations (32x32).tsx",
+        "Idle_Exit.tsx",
+        "Idle_Enter.tsx",
+        "Mapa2.json",
+        "pixil-frame-0.tsx"
+    ],
+    "project": "oop.tiled-project",
+    "recentFiles": [
+        "Terrain (32x32).tsx",
+        "Decorations (32x32).tsx",
+        "Idle_Exit.tsx",
+        "Idle_Enter.tsx",
+        "pixil-frame-0.tsx",
+        "Mapa2.json",
+        "enemigo_test_no_es_el_enemigo_real.tsx",
+        "porfavor.json",
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Mapa2.json",
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/mapa1real.json",
+        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/mapa1.json"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 32,
+        "width": 30
+    }
+}
