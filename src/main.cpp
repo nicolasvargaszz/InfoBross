@@ -24,7 +24,8 @@ std::vector<std::string> maps = {
 std::vector<std::string> tilesetTextures = {
     "../assets/tilesets/Terrain (32x32).png",
     "../assets/tilesets/Decorations (32x32).png",
-    "../assets/tilesets/Idle.png"
+    "../assets/tilesets/Idle.png",
+    "../assets/sprites/pixil-frame-0.png"
 };
 
 
@@ -339,6 +340,10 @@ int main()
             player.handleInput();
             player.applyPhysics(dt, *levelManager.getCurrentMap());
             player.update(dt);
+
+            levelManager.getCurrentMap()->update(dt);
+
+            
             fade.update();
 
             // Actualiza Puertas
