@@ -263,6 +263,7 @@ int main()
     }
 
     Player player(playerTexture);
+    levelManager.getCurrentMap()->setPlayer(&player);
     // Cargar animaciones del jugador
     if (!player.loadAnimation("idle", "../assets/sprites/static_mathi.png", 1, 0.5f) ||
         !player.loadAnimation("walk", "../assets/sprites/move_mathi.png", 4, 0.15f) ||

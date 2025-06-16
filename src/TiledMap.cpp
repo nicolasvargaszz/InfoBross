@@ -218,7 +218,7 @@ void TiledMap::update(float dt) {
     //update for enemies:
     for(auto &enemy : enemies)
     {
-        enemy.update(dt, this);
+        enemy.update(dt, this, playerPtr);
 
         if (playerPtr) // Only if we have a valid pointer
         {
