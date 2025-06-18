@@ -90,7 +90,6 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
 
             if(rawID == 292)
             {
-                std::cout << "########################### Enemy spawned ###########################" << std::endl;
                 // Determine tile position as with other tiles
                 int x = i % mapWidth;
                 int y = i / mapWidth;
