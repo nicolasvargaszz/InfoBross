@@ -12,7 +12,7 @@
 #include "../include/Player.h"
 #include "../include/LevelManager.h"
 #include "../include/FadeTransition.h"
-
+#include "../include/Dialogue.h"
 
 using namespace sf;
 
@@ -62,11 +62,11 @@ int main()
     if (!staticMathiTexture.loadFromFile("../assets/sprites/static_mathi.png"))
         return -1;
     Sprite staticMathiSprite(staticMathiTexture);
-    staticMathiSprite.setScale({-0.5f, 0.5f});
+    staticMathiSprite.setScale({-10.0f, 10.0f});
     FloatRect bounds = staticMathiSprite.getGlobalBounds();
     staticMathiSprite.setPosition({
-        10.f + bounds.size.x,
-        window.getSize().y - bounds.size.y - 10.f
+        50.f + bounds.size.x,
+        window.getSize().y - bounds.size.y - 50.f
     });
 
     std::vector<std::string> dialogueLines = {
@@ -74,131 +74,42 @@ int main()
         "I need to pass Data structures and OOP...",
         "I will study i must pass this course..."
     };
-    int currentLineIndex = 0;
-    std::string stringToDisplayForTypewriter;
-    unsigned int currentCharTypewriterIndex = 0;
-    Clock typewriterClock;
-    const float TYPEWRITER_CHAR_INTERVAL = 0.05f;
+    Clock typewriterclk;
+    Dialogue dialogue( font, dialogueLines, 20U);
 
-    enum class DialogueState { TYPING, WAITING_FOR_NEXT, FINISHED };
-    DialogueState currentDialogueState = DialogueState::TYPING;
 
-    Text dialogueText(font, "", 35U);
-    dialogueText.setFillColor(Color::White);
-    FloatRect dialogueTextBounds = dialogueText.getLocalBounds();
-    dialogueText.setOrigin({
-        dialogueTextBounds.size.x / 2.f,
-        dialogueTextBounds.size.y / 2.f
-    });
-    dialogueText.setPosition({
-        window.getSize().x / 2.f,
-        window.getSize().y * 0.85f
-    });
-
-    RectangleShape dialogueBox;
-    dialogueBox.setSize({window.getSize().x * 0.8f, 150.f});
-    dialogueBox.setFillColor({0, 0, 0, 150});
-    dialogueBox.setOrigin({
-        dialogueBox.getSize().x / 2.f,
-        dialogueBox.getSize().y / 2.f
-    });
-    dialogueBox.setPosition({
-        window.getSize().x / 2.f,
-        window.getSize().y * 0.85f
-    });
-
-    // --- Dialogue Scene Loop ---
-    bool showDialogueScene = !dialogueLines.empty();
-    if (showDialogueScene)
-        typewriterClock.restart();
-
-    while (showDialogueScene && window.isOpen())
+while (window.isOpen() && !dialogue.isFinished())
+{
+    // (a) Drain *all* events
+    while (auto evOpt = window.pollEvent())
     {
-        std::optional<Event> evOpt = window.pollEvent();
-        while (evOpt.has_value())
+        const sf::Event& ev = *evOpt;
+
+        // Close button → exit
+        if (ev.is<sf::Event::Closed>())
         {
-            const Event &ev = evOpt.value();
-
-            if (ev.is<Event::Closed>())
-            {
-                window.close();
-                showDialogueScene = false;
-            }
-            else if (ev.is<Event::KeyPressed>())
-            {
-                if (currentDialogueState == DialogueState::TYPING)
-                {
-                    // Completar línea de diálogo inmediatamente
-                    stringToDisplayForTypewriter = dialogueLines[currentLineIndex];
-                    currentCharTypewriterIndex = stringToDisplayForTypewriter.length();
-                    dialogueText.setString(
-                        stringToDisplayForTypewriter + "\n(Press any key to continue)"
-                    );
-                    currentDialogueState = DialogueState::WAITING_FOR_NEXT;
-                }
-                else if (currentDialogueState == DialogueState::WAITING_FOR_NEXT)
-                {
-                    currentLineIndex++;
-                    if (currentLineIndex < static_cast<int>(dialogueLines.size()))
-                    {
-                        stringToDisplayForTypewriter.clear();
-                        currentCharTypewriterIndex = 0;
-                        dialogueText.setString("");
-                        currentDialogueState = DialogueState::TYPING;
-                        typewriterClock.restart();
-                    }
-                    else
-                    {
-                        showDialogueScene = false;
-                    }
-                }
-            }
-            if (showDialogueScene)
-                evOpt = window.pollEvent();
-            else
-                break;
+            window.close();
+            break;
         }
+        
 
-        if (currentDialogueState == DialogueState::TYPING &&
-            currentLineIndex < static_cast<int>(dialogueLines.size()))
-        {
-            if (typewriterClock.getElapsedTime().asSeconds() > TYPEWRITER_CHAR_INTERVAL)
-            {
-                if (currentCharTypewriterIndex <
-                    dialogueLines[currentLineIndex].length())
-                {
-                    stringToDisplayForTypewriter +=
-                        dialogueLines[currentLineIndex][currentCharTypewriterIndex];
-                    dialogueText.setString(stringToDisplayForTypewriter);
-                    currentCharTypewriterIndex++;
-                    typewriterClock.restart();
-                }
-                else
-                {
-                    dialogueText.setString(
-                        stringToDisplayForTypewriter + "\n(Press any key to continue)"
-                    );
-                    currentDialogueState = DialogueState::WAITING_FOR_NEXT;
-                }
-            }
-        }
-
-        dialogueTextBounds = dialogueText.getLocalBounds();
-        dialogueText.setOrigin({
-            dialogueTextBounds.size.x / 2.f,
-            dialogueTextBounds.size.y / 2.f
-        });
-        dialogueText.setPosition({
-            window.getSize().x / 2.f,
-            window.getSize().y * 0.85f
-        });
-
-        window.clear({30, 30, 80});
-        window.draw(staticMathiSprite);
-        window.draw(dialogueBox);
-        window.draw(dialogueText);
-        window.display();
+        // Forward every event to your Dialogue
+        dialogue.handleEvent(ev);
     }
+
+    // (b) Update typing animation
+    float dt = typewriterclk.restart().asSeconds();
+    dialogue.update(dt);
+
+    // (c) Draw the current frame
+    window.clear({30, 30, 80});
+    window.draw(staticMathiSprite);
+    dialogue.draw(window);
+    window.display();
+}
+
+// Dialogue finished
+
 
     // --- Title Screen ---
     Text title_text(font, "INFOBROS", 128U);
