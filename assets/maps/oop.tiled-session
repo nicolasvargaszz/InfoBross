@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Mapa2.json",
+    "activeFile": "pixil-frame-0.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -76,8 +76,8 @@
             "scale": 0.92,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 163.04347826086956,
-                "y": 192.93478260869566
+                "x": 429.3478260869564,
+                "y": 251.6304347826087
             }
         },
         "Terrain (32x32).tsx": {
@@ -95,30 +95,27 @@
         },
         "porfavor.json": {
             "scale": 0.5695,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 478.4899034240562,
-                "y": 319.5785776997366
+                "x": 477.6119402985075,
+                "y": 318.70061457418785
             }
         }
     },
     "last.imagePath": "/Users/nicolasvargas/Downloads/evil.enemy.very.evil",
     "openFiles": [
-        "Terrain (32x32).tsx",
-        "Decorations (32x32).tsx",
-        "Idle_Exit.tsx",
-        "Idle_Enter.tsx",
-        "Mapa2.json",
-        "pixil-frame-0.tsx"
+        "pixil-frame-0.tsx",
+        "Idle_Exit.tsx"
     ],
     "project": "oop.tiled-project",
     "recentFiles": [
-        "Terrain (32x32).tsx",
-        "Decorations (32x32).tsx",
         "Idle_Exit.tsx",
-        "Idle_Enter.tsx",
         "pixil-frame-0.tsx",
         "Mapa2.json",
+        "Decorations (32x32).tsx",
+        "Idle_Enter.tsx",
+        "Terrain (32x32).tsx",
+        "mapaNico.json",
         "enemigo_test_no_es_el_enemigo_real.tsx",
         "porfavor.json",
         "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Mapa2.json",

@@ -24,5 +24,7 @@ private:
     float speed;
     float direction;
     float velocityY;
+    float animationTime; // Time to change frames for the enemy
+    int currentFrame; // 0 to 3 for the 4 frames
     bool onGround;
 };

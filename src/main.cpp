@@ -275,6 +275,7 @@ while (window.isOpen() && !dialogue.isFinished())
             else if (waitingForDoor && doorTimer.getElapsedTime().asSeconds() > 0.5f)
             {
                 levelManager.loadNextLevel();
+                levelManager.getCurrentMap()->setPlayer(&player);
                 player.setPosition(levelManager.getCurrentMap()->getEntradaPosition());
                 waitingForDoor = false;
             }
