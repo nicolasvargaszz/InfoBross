@@ -4,6 +4,9 @@
 #include <string>
 #include <unordered_set>
 #include "AnimatedDoor.h"
+#include "Enemy.h"
+
+class Player; // Forward declaration para evitar ciclo de includes
 
 class TiledMap : public sf::Drawable
 {
@@ -29,6 +32,10 @@ public:
     AnimatedDoor& getPuertaEntrada();
     AnimatedDoor& getPuertaSalida();
 
+    // player
+    void setPlayer(Player* p) { playerPtr = p; }
+    
+
 private:
     int mapWidth;
     int mapHeight;
@@ -50,6 +57,12 @@ private:
     std::vector<sf::Sprite> solidTiles;      // Tiles sólidos para colisión
     std::vector<sf::FloatRect> solidRects;  // Rectángulos sólidos
 
+    //Enemies
+
+    std::vector<Enemy> enemies;  // <-- Store Enemy objects here
+    
+    sf::Texture enemyTexture;
+
     sf::Vector2f entradaPosition;            // Posición de la puerta de entrada
     std::vector<sf::FloatRect> salidaRects;  // Rectángulos de puertas de salida
 
@@ -60,4 +73,8 @@ private:
         93,96,97,98,100,102,103,105,106,
         108,109,111,112
     };
+
+    Player* playerPtr = nullptr; // Puntero al jugador para colisiones con enemigos
+
+
 };

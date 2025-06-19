@@ -1,5 +1,6 @@
 #include "../include/TiledMap.h"
 #include <nlohmann/json.hpp>
+#include "../include/Player.h"
 #include <fstream>
 #include <iostream>
 
@@ -11,7 +12,7 @@ bool intersects(const sf::FloatRect& a, const sf::FloatRect& b)
            a.position.y + a.size.y > b.position.y;
 }
 
-TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string>& texturePaths)
+TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string>& texturePaths) : playerPtr(nullptr)
 {
     // Cargar todas las texturas tileset
     for (const auto& path : texturePaths)
@@ -23,9 +24,13 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
             continue;
         }
         tilesetTextures.push_back(texture);
-        std::cout << "Cargado tileset: " << path << std::endl;
+        std::cout << "Cargado tileset: " << path << std::endl;    
     }
-
+    // texture of the enemy
+    if (!enemyTexture.loadFromFile("../assets/sprites/pixil-frame-0.png"))
+    {
+        std::cerr << "Error loading Enemy.png for enemies\n";
+    }
     // Cargar textura especial de puerta (Idle.png)
     if (!puertaTexture.loadFromFile("../assets/tilesets/Idle.png"))
     {
@@ -81,6 +86,19 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
             // Por defecto usar tileset
             sf::Sprite tile(puertaTexture);
 
+            // Enemies
+
+            if(rawID == 292)
+            {
+                // Determine tile position as with other tiles
+                int x = i % mapWidth;
+                int y = i / mapWidth;
+                float posX = float(x * tileWidth);
+                float posY = float(y * tileHeight);
+
+                // Create an enemy at this position
+                enemies.push_back(Enemy(enemyTexture, {posX, posY}) );
+            }
             // Detectar puerta
             if (rawID == 290 || rawID == 291)
             {
@@ -195,6 +213,39 @@ sf::Vector2f TiledMap::getPixelSize() const
 void TiledMap::update(float dt) {
     puertaEntrada.update(dt);
     puertaSalida.update(dt);
+
+    //update for enemies:
+    for(auto &enemy : enemies)
+    {
+        enemy.update(dt, this, playerPtr);
+
+        if (playerPtr) // Only if we have a valid pointer
+        {
+            sf::FloatRect eBounds = enemy.getBounds();
+            sf::FloatRect pBounds = playerPtr->getBounds();
+            
+
+            if (intersects(eBounds, pBounds))
+            {
+                // Check if collision from above
+                float playerBottom = pBounds.position.y + pBounds.position.x;
+                float enemyTop     = eBounds.position.y + 5.f;
+                bool  fromAbove    = (playerBottom < enemyTop);
+
+                enemy.onPlayerCollision(fromAbove);
+
+                if(fromAbove)
+                {
+                    std::cout << "Enemy killed by player!" << std::endl;
+                }
+                else
+                {
+                    std::cout << "Game Over!" << std::endl;
+                    playerPtr->setPosition({-9999.f, -9999.f});
+                }
+            }
+        }
+    }
 }
 
 void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -203,6 +254,11 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     target.draw(puertaEntrada, states);
     target.draw(puertaSalida, states);
+
+    for (auto &enemy : const_cast<std::vector<Enemy>&>(enemies))
+        enemy.render(const_cast<sf::RenderWindow&>(
+            static_cast<const sf::RenderWindow&>(target)
+        ));
 }
 
 AnimatedDoor& TiledMap::getPuertaEntrada() {

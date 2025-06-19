@@ -77,6 +77,7 @@ void Player::handleInput() {
 }
 
 void Player::applyPhysics(float dt, const TiledMap& map) {
+    // Apply gravity
     velocity.y += GRAVITY * dt;
 
     // Horizontal movement
