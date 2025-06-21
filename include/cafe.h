@@ -12,6 +12,7 @@ public:
 private:
     sf::Sprite sprite;
     sf::Texture texture;
+    bool collected = false;
 };
 
 std::vector<Cafe> createCafes(); // Function to create multiple Cafe objects
