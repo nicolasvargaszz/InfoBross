@@ -18,6 +18,7 @@ using namespace sf;
 
 // Assets paths
 std::vector<std::string> maps = {
+    "../assets/maps/mapa_cesar_pls.json",
     "../assets/maps/Mapa2.json",
     "../assets/maps/porfavor.json"
 };
@@ -319,7 +320,7 @@ while (window.isOpen() && !dialogue.isFinished())
 
         // --- Cámara ---
         view.setCenter(player.getPosition());
-        // window.setView(view);
+        window.setView(view);
 
         sf::Vector2f halfViewSize = view.getSize() / 2.f;
         sf::Vector2f center = player.getPosition();
