@@ -141,17 +141,14 @@ int main()
     }
     player.setPosition((*levelManager.getCurrentMap()).getEntradaPosition());
 
-    Texture cafeTexture;
-    if (!cafeTexture.loadFromFile("../assets/sprites/CAFE.png"))
-        return -1;
+ 
 
-    std::vector<Sprite> cafeItems;
-    int cafeScore = 0;
-    const int CAFE_TO_WIN = 10;
-    bool gameWon = false;
     int cafeCounter = 0;
     bool gameFinished = false;
-
+    auto& cafes = levelManager.getCurrentMap()->getCafes();
+    sf::Text cafeScoreText(font, "CAFE: 0", 30U);
+    cafeScoreText.setFillColor(sf::Color::Blue);
+    cafeScoreText.setPosition({30.f, 30.f});
     Clock dtClock;
     View view = window.getDefaultView();
     GameState state = GameState::MENU;
@@ -214,7 +211,7 @@ int main()
             }
             case GameState::PLAYING:
             {
-                if (!gameWon)
+                if (!gameFinished)
                 {
                     player.handleInput();
                     player.applyPhysics(dt, *levelManager.getCurrentMap());
@@ -235,6 +232,17 @@ int main()
                     center.y = std::clamp(center.y, halfViewSize.y, mapSize.y - halfViewSize.y);
                     view.setCenter(center);
                     window.setView(view);
+
+                    for (auto& c : cafes)
+                        c.update(player.getBounds(), cafeCounter, gameFinished);
+
+                    // 2) Refresh the on-screen text only when it changes
+                    cafeScoreText.setString("CAFE: " + std::to_string(cafeCounter));
+
+                    // 3) If your Cafe::update sets gameFinished when you hit your target:
+                    if (gameFinished)
+                        state = GameState::GAME_OVER;
+
 
                     // Puerta
                     static bool waitingForDoor = false;
@@ -277,8 +285,12 @@ int main()
                 window.draw(*levelManager.getCurrentMap());
                 window.draw(levelManager.getCurrentMap()->getPuertaSalida());
 
-                for (auto& cafe : cafeItems)
-                    window.draw(cafe);
+                for (auto& c : cafes)
+                    c.render(window);
+
+                // draw your counter
+                window.draw(cafeScoreText);
+            
 
                 player.render(window);
                 fade.draw(window);
