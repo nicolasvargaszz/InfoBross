@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-// 1) Forward declaration para evitar ciclo de includes:
 class TiledMap;
 class Player;
 
@@ -24,5 +23,7 @@ private:
     float speed;
     float direction;
     float velocityY;
+    float animationTime; 
+    int currentFrame; 
     bool onGround;
 };

@@ -13,6 +13,8 @@
 #include "../include/LevelManager.h"
 #include "../include/FadeTransition.h"
 #include "../include/Dialogue.h"
+#include "../include/Menu.h" 
+#include "../include/ExitButton.h" 
 
 using namespace sf;
 
@@ -45,7 +47,7 @@ int main()
         static_cast<unsigned int>(std::min(mapSize.x, 1280.f)),
         static_cast<unsigned int>(std::min(mapSize.y, 720.f))
     });
-    RenderWindow window(mode, "INFOBROS");
+    RenderWindow window(mode, "INFOBROS", sf::Style::None);
     window.setFramerateLimit(60);
 
     // --- Font ---
@@ -53,9 +55,27 @@ int main()
     if (!font.openFromFile("../assets/font/GAME_glm.ttf"))
         return -1;
 
+    // --- Menu ---
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("../assets/tilesets/Menu_Background.png")) {
+        std::cerr << "No se pudo cargar imagen de fondo\n";
+        return -1;
+    }
+
+    sf::SoundBuffer clickBuffer;
+    if (!clickBuffer.loadFromFile("../assets/sounds/game_click.mp3")) {
+    std::cerr << "Error cargando sonido de clic.\n";
+    }
+
+    Menu menu(window, font, mode, backgroundTexture, clickBuffer);
+
+    // --- Botón de Salir ---
+    ExitButton exitButton(window, font);
+
+
     // --- Music ---
     Music backgroundMusic;
-    if (!backgroundMusic.openFromFile("../assets/music/musica_OOP.mp3"))
+    if (!backgroundMusic.openFromFile("../assets/sounds/musica_OOP.mp3"))
         return -1;
     backgroundMusic.setLooping(true);
     backgroundMusic.setVolume(20.f);
@@ -70,13 +90,11 @@ int main()
         std::cout << "Failed to load static_mathi.png";
         return -1;
     }
-
     std::vector<std::string> dialogueLines = {
         "Oh, I fell asleep!!!!! ",
         "I need to pass Data structures and OOP...",
         "I will study i must pass this course..."
     };
-    Clock typewriterclk;
     Dialogue dialogue(font, dialogueLines, 20U, staticMathiTexture);
 
     // --- Title Screen Text ---
@@ -111,8 +129,8 @@ int main()
         return -1;
     }
 
+    // --- Player ---
     Player player(playerTexture);
-    // Cargar animaciones del jugador
     levelManager.getCurrentMap()->setPlayer(&player);
     if (!player.loadAnimation("idle", "../assets/sprites/static_mathi.png", 1, 0.5f) ||
         !player.loadAnimation("walk", "../assets/sprites/move_mathi.png", 4, 0.15f) ||
@@ -135,11 +153,10 @@ int main()
     bool gameFinished = false;
 
     Clock dtClock;
-
-    // Initialize the game state
+    View view = window.getDefaultView();
     GameState state = GameState::MENU;
 
-    // Main loop
+
     while (window.isOpen())
     {
         float dt = dtClock.restart().asSeconds();
@@ -148,17 +165,17 @@ int main()
         while (evOpt.has_value())
         {
             const Event& ev = evOpt.value();
-
-            if (ev.is<Event::Closed>())
+            exitButton.handleEvent(ev);
+            if (exitButton.isClicked())
                 window.close();
 
-            // Handle events by game state
             switch(state)
             {
                 case GameState::MENU:
-                    if (ev.is<Event::KeyPressed>())
-                    {
+                    menu.handleEvent(levelManager); 
+                    if (menu.shouldStartGame()) { 
                         state = GameState::DIALOGUE;
+                        backgroundMusic.setVolume(menu.getVolume());
                     }
                     break;
 
@@ -167,8 +184,6 @@ int main()
                     break;
 
                 case GameState::PLAYING:
-                    // Add player input handling here if needed
-                    
                     break;
 
                 case GameState::GAME_OVER:
@@ -180,20 +195,25 @@ int main()
             evOpt = window.pollEvent();
         }
 
-        // Update logic by game state
+        exitButton.update();
+
         switch(state)
         {
             case GameState::MENU:
-                // Nothing to update for now
+            {
+                menu.update();
+                menu.render();
                 break;
-
+            }
             case GameState::DIALOGUE:
+            {
                 dialogue.update(dt);
                 if (dialogue.isFinished())
-                    state = GameState::PLAYING;  // After dialogue goes to menu
+                    state = GameState::PLAYING;
                 break;
-
+            }
             case GameState::PLAYING:
+            {
                 if (!gameWon)
                 {
                     player.handleInput();
@@ -204,7 +224,19 @@ int main()
 
                     levelManager.getCurrentMap()->getPuertaSalida().update(dt);
 
-                    // Door logic
+                    // Cámara
+                    sf::Vector2f playerPos = player.getPosition();
+                    sf::Vector2f viewSize = view.getSize();
+                    sf::Vector2f mapSize = levelManager.getCurrentMap()->getPixelSize();
+                    sf::Vector2f halfViewSize = viewSize / 2.f;
+                    sf::Vector2f center = playerPos;
+
+                    center.x = std::clamp(center.x, halfViewSize.x, mapSize.x - halfViewSize.x);
+                    center.y = std::clamp(center.y, halfViewSize.y, mapSize.y - halfViewSize.y);
+                    view.setCenter(center);
+                    window.setView(view);
+
+                    // Puerta
                     static bool waitingForDoor = false;
                     static Clock doorTimer;
                     if (!waitingForDoor && levelManager.getCurrentMap()->isTouchingSalida(player.getBounds()))
@@ -217,27 +249,23 @@ int main()
                     else if (waitingForDoor && doorTimer.getElapsedTime().asSeconds() > 0.5f)
                     {
                         levelManager.loadNextLevel();
+                        levelManager.getCurrentMap()->setPlayer(&player);
                         player.setPosition(levelManager.getCurrentMap()->getEntradaPosition());
                         waitingForDoor = false;
                     }
-
-                    // Cafe collection logic
                 }
                 break;
-
+            }
             case GameState::GAME_OVER:
-                // No update needed for now
                 break;
         }
 
-        // --- Rendering ---
         window.clear();
 
         switch(state)
         {
             case GameState::MENU:
-                window.draw(title_text);
-                window.draw(prompt);
+                menu.render(); 
                 break;
 
             case GameState::DIALOGUE:
@@ -253,18 +281,14 @@ int main()
                     window.draw(cafe);
 
                 player.render(window);
-
-                //window.draw(cafeScoreText);
-
                 fade.draw(window);
-
                 break;
 
             case GameState::GAME_OVER:
-                // You can draw game over screen here
                 break;
         }
 
+        exitButton.render();
         window.display();
     }
 

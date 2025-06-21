@@ -1,4 +1,3 @@
-
 #include "../include/Enemy.h"
 #include "../include/TiledMap.h"  // only if you need TiledMap methods
 #include "../include/Player.h"
@@ -19,20 +18,56 @@ namespace
     }
 }
 
+// 1-) New static Texture for the 4 separates frames
+
+static sf::Texture sprite_1;
+static sf::Texture sprite_2;
+static sf::Texture sprite_3;
+static sf::Texture sprite_4;
+
+
 Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
 : sprite(texture)
 {
-    sprite.setPosition(startPos);
-    sprite.setScale({1.f, 1.f});
+    // 2) Load each texture from the ../assets/sprites
+    sprite_1.loadFromFile("../assets/sprites/enemy/sprite_1.png");
+    sprite_2.loadFromFile("../assets/sprites/enemy/sprite_2.png");
+    sprite_3.loadFromFile("../assets/sprites/enemy/sprite_3.png");
+    sprite_4.loadFromFile("../assets/sprites/enemy/sprite_4.png");
 
+    //state with the first texture
+
+    sprite.setTexture(sprite_1);
+
+    sprite.setPosition(startPos);
+    sprite.setScale({1.f, 1.f}); // if we change this the size of the enemy will change
+    // general enemy properties
     speed      = 10.f;
     direction  = 1.f; // 1 = right, -1 = left
     velocityY  = 0.f;
     onGround   = false;
+
+    animationTime = 0.1f; // time for cycling the frames
+    currentFrame = 0; // start with the first frame
 }
 
 void Enemy::update(float deltaTime, TiledMap* map, Player* player)
 {
+    // step no 3 for the enemy animation:
+    animationTime += deltaTime;
+    if(animationTime >= 0.15f)
+    {
+        animationTime = 0.f;
+        currentFrame = (currentFrame + 1) % 4; // Cycle through
+        switch(currentFrame)
+        {
+            case 0: sprite.setTexture(sprite_1); break;
+            case 1: sprite.setTexture(sprite_2); break;
+            case 2: sprite.setTexture(sprite_3); break;
+            case 3: sprite.setTexture(sprite_4); break;
+        }
+    }
+
     // 1. Aplicar gravedad si no está en el suelo
     const float gravity = 400.f;
     if(!onGround)
@@ -102,7 +137,7 @@ void Enemy::update(float deltaTime, TiledMap* map, Player* player)
             else
             {
                 // Kill player
-                player->setPosition({-9999.f, -9999.f});
+                // player->setPosition({-9999.f, -9999.f}); uncomment this line to move player off-screen when is killed by the enemy, i just commented becuase when getting kill every time i want to test the code xDDDDD
                 std::cout << "Player killed by enemy!\n";
             }
         }
