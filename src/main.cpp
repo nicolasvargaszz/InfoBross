@@ -301,10 +301,14 @@ int main()
                 break;
         }
 
-        if (!(state == GameState::MENU))
+        if (state != GameState::MENU)
         {
             window.setView(window.getDefaultView());
             exitButton.render();
+        }
+        if (state == GameState::PLAYING)
+        {
+            window.draw(cafeScoreText);
         }
         window.display();
     }
