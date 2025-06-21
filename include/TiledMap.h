@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include "AnimatedDoor.h"
 #include "Enemy.h"
+#include "Cafe.h"
 
 class Player; // Forward declaration para evitar ciclo de includes
 

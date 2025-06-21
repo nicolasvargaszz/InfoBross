@@ -14,7 +14,6 @@ public:
     sf::FloatRect getBounds() const;
 
     void render(sf::RenderWindow& window);
-    
 
     void onPlayerCollision(bool fromAbove);
 

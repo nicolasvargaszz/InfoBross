@@ -86,8 +86,13 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
             // Por defecto usar tileset
             sf::Sprite tile(puertaTexture);
 
+            // Cafe
+            if (rawID == 293)
+            {
+                std::cout << "Cargando Cafe en la posición " << std::endl;
+            }
+            
             // Enemies
-
             if(rawID == 292)
             {
                 // Determine tile position as with other tiles

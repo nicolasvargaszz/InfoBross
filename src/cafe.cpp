@@ -1,4 +1,4 @@
-#include "../include/cafe.h"
+#include "../include/Cafe.h"
 #include <iostream>
 
 // One shared texture so multiple Cafe instances can reuse it.
