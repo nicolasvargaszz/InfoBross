@@ -15,6 +15,8 @@ public:
     // Constructor recibe ruta del mapa JSON y vector con rutas de texturas (tilesets)
     TiledMap(const std::string& jsonMapPath, const std::vector<std::string>& texturePaths);
 
+    // Access spawned cafés
+    std::vector<Cafe>& getCafes() { return cafes; }
     // Para detectar si el jugador está tocando la puerta de salida
     bool isTouchingSalida(const sf::FloatRect& bounds) const;
 
@@ -43,6 +45,10 @@ private:
     int tileWidth;
     int tileHeight;
 
+    //cafes
+    sf::Texture cafeTexture;
+    std::vector<Cafe> cafes;
+    
     // Door
     AnimatedDoor puertaEntrada;
     AnimatedDoor puertaSalida;
