@@ -32,6 +32,7 @@ private:
     sf::Text playButton;
     sf::Text volumeLabel;
     sf::Text resolutionLabel;
+    sf::Text exitLabel;
 
     std::size_t currentResolutionIndex;
 

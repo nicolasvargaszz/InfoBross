@@ -288,7 +288,10 @@ int main()
                 break;
         }
 
-        exitButton.render();
+        if (!(state == GameState::MENU))
+        {
+            exitButton.render();
+        }
         window.display();
     }
 

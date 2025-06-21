@@ -8,6 +8,7 @@ Menu::Menu(sf::RenderWindow& window, const sf::Font& font, sf::VideoMode& m, con
     , playButton(font, "Play" , 28U)
     , volumeLabel(font, "Volume" , 24U)
     , resolutionLabel(font, "Resolution" , 24U)
+    , exitLabel(font, "Exit" , 24U)
     , clickSound(clickBuffer)
 {
     textureSize = bSprite.getSize();
@@ -62,6 +63,10 @@ void Menu::handleEvent(LevelManager& levelManager)
                     updateBackgroundScale();
                     updateTexts();
                 }
+                else if (isMouseOverText(exitLabel, mousePos)) {
+                    clickSound.play(); 
+                    window.close();
+                }
             }
         }
     }
@@ -70,12 +75,16 @@ void Menu::handleEvent(LevelManager& levelManager)
 void Menu::update() {
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     
-    std::vector<sf::Text*> options = { &playButton, &volumeLabel, &resolutionLabel };
+    std::vector<sf::Text*> options = {&playButton, &volumeLabel, &resolutionLabel, &exitLabel};
     
     for (auto* textPtr : options)
     {
         if (isMouseOverText(*textPtr, mousePos)) {
-            textPtr->setFillColor(sf::Color::Yellow);
+            if (textPtr == &exitLabel){
+                textPtr->setFillColor(sf::Color::Red); 
+            } else {
+                textPtr->setFillColor(sf::Color::Yellow);
+            }
             textPtr->setScale({1.1f, 1.1f}); 
         } else {
             textPtr->setFillColor(sf::Color::White);
@@ -91,6 +100,7 @@ void Menu::render()
     window.draw(playButton);
     window.draw(volumeLabel);
     window.draw(resolutionLabel);
+    window.draw(exitLabel);
 }
 
 bool Menu::shouldStartGame() const {
@@ -104,14 +114,14 @@ float Menu::getVolume() const {
 void Menu::updateTexts()
 {
     // Actualizamos textos con los valores
-    volumeLabel.setString("Volumen: " + std::to_string(static_cast<int>(volume)) + "%");
-    resolutionLabel.setString("Resolución: " + resolutionsOp[currentResolutionIndex]);
+    volumeLabel.setString("Volume: " + std::to_string(static_cast<int>(volume)) + "%");
+    resolutionLabel.setString("Resolution: " + resolutionsOp[currentResolutionIndex]);
 
     sf::FloatRect titleBounds = titleText.getLocalBounds();
     titleText.setOrigin({titleBounds.position.x + titleBounds.size.x / 2.f, titleBounds.position.y + titleBounds.size.y / 2.f});
     titleText.setPosition({window.getSize().x / 2.f, 75.f});
 
-    std::vector<sf::Text*> options = { &playButton, &volumeLabel, &resolutionLabel };
+    std::vector<sf::Text*> options = {&playButton, &volumeLabel, &resolutionLabel, &exitLabel};
 
     float spacingY = 60.f; // espacio vertical entre opciones
     float startY = 220.f;  // posición Y inicial para el primer botón

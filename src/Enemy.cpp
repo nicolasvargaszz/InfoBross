@@ -29,14 +29,20 @@ static sf::Texture sprite_4;
 Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
 : sprite(texture)
 {
-    // 2) Load each texture from the ../assets/sprites
-    sprite_1.loadFromFile("../assets/sprites/enemy/sprite_1.png");
-    sprite_2.loadFromFile("../assets/sprites/enemy/sprite_2.png");
-    sprite_3.loadFromFile("../assets/sprites/enemy/sprite_3.png");
-    sprite_4.loadFromFile("../assets/sprites/enemy/sprite_4.png");
-
+    if (!sprite_1.loadFromFile("../assets/sprites/enemy/sprite_1.png")) {
+        std::cerr << "Error: No se pudo cargar sprite_2.png\n";
+    }
+    if (!sprite_2.loadFromFile("../assets/sprites/enemy/sprite_2.png")) {
+        std::cerr << "Error: No se pudo cargar sprite_2.png\n";
+    }
+    if (!sprite_3.loadFromFile("../assets/sprites/enemy/sprite_3.png")) {
+        std::cerr << "Error: No se pudo cargar sprite_2.png\n";
+    }
+    if (!sprite_4.loadFromFile("../assets/sprites/enemy/sprite_4.png")) {
+        std::cerr << "Error: No se pudo cargar sprite_2.png\n";
+    }
+    
     //state with the first texture
-
     sprite.setTexture(sprite_1);
 
     sprite.setPosition(startPos);
