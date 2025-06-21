@@ -24,4 +24,9 @@ private:
 
     // Simple AABB intersection helper
     static bool intersects(const sf::FloatRect& a, const sf::FloatRect& b);
+
+    // Cafe flotante
+    float floatOffset = 0.f;
+    bool goingUp = true;
+    sf::Vector2f originalPos;
 };

@@ -36,7 +36,7 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
     {
         std::cerr << "No se pudo cargar Idle.png (puerta)" << std::endl;
     }
-    //Cargar textura de los cages
+    //Cargar textura de los cafes
     if (!cafeTexture.loadFromFile("../assets/sprites/CAFE.png")) {
         std::cerr << "Error loading CAFE.png for cafes\n";
     }
@@ -95,7 +95,7 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
                     int x = i % mapWidth;
                     int y = i / mapWidth;
                     float posX = float(x * tileWidth);
-                    float posY = float((y + 1) * tileHeight);
+                    float posY = float(y * tileHeight);
                     cafes.emplace_back(cafeTexture, sf::Vector2f(posX, posY));
                     continue; 
             }

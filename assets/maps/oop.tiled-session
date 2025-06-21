@@ -68,6 +68,9 @@
                 "y": 319.6807183836369
             }
         },
+        "CAFE.tsx": {
+            "scaleInEditor": 1
+        },
         "Decorations (32x32).tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -98,11 +101,19 @@
             "scaleInEditor": 0.3255
         },
         "map1.json": {
-            "scale": 1,
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 480,
-                "y": 320.5
+                "x": 558.6666666666666,
+                "y": 560
+            }
+        },
+        "mapa1.json": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 635.9999999999999,
+                "y": 610.6666666666665
             }
         },
         "pixil-frame-0.tsx": {
@@ -141,6 +152,9 @@
     ],
     "project": "oop.tiled-project",
     "recentFiles": [
+        "CAFE.tsx",
+        "mapa1.json",
+        "map1.json",
         "enemigo_test_no_es_el_enemigo_real.tsx",
         "Terrain (32x32).tsx",
         "Decorations (32x32).tsx",
@@ -148,15 +162,12 @@
         "Idle_Enter.tsx",
         "Mapa2.json",
         "pixil-frame-0.tsx",
-        "map1.json",
         "prueba.json",
-        "C:/Users/GIGABYTE/Downloads/sin nombre.jpg",
-        "porfavor.json",
-        "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Mapa2.json"
+        "C:/Users/GIGABYTE/Downloads/sin nombre.jpg"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 32,
+        "width": 32
     }
 }

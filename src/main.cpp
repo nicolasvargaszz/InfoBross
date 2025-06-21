@@ -20,6 +20,7 @@ using namespace sf;
 
 // Assets paths
 std::vector<std::string> maps = {
+    "../assets/maps/map1.json",
     "../assets/maps/Mapa2.json",
     "../assets/maps/porfavor.json"
 };
@@ -141,14 +142,14 @@ int main()
     }
     player.setPosition((*levelManager.getCurrentMap()).getEntradaPosition());
 
- 
-
+    // --- Cafes ---
     int cafeCounter = 0;
     bool gameFinished = false;
-    auto& cafes = levelManager.getCurrentMap()->getCafes();
     sf::Text cafeScoreText(font, "CAFE: 0", 30U);
     cafeScoreText.setFillColor(sf::Color::Blue);
     cafeScoreText.setPosition({30.f, 30.f});
+
+
     Clock dtClock;
     View view = window.getDefaultView();
     GameState state = GameState::MENU;
@@ -233,7 +234,7 @@ int main()
                     view.setCenter(center);
                     window.setView(view);
 
-                    for (auto& c : cafes)
+                    for (auto& c : levelManager.getCurrentMap()->getCafes())
                         c.update(player.getBounds(), cafeCounter, gameFinished);
 
                     // 2) Refresh the on-screen text only when it changes
@@ -285,7 +286,7 @@ int main()
                 window.draw(*levelManager.getCurrentMap());
                 window.draw(levelManager.getCurrentMap()->getPuertaSalida());
 
-                for (auto& c : cafes)
+                for (auto& c : levelManager.getCurrentMap()->getCafes())
                     c.render(window);
 
                 // draw your counter
@@ -302,6 +303,7 @@ int main()
 
         if (!(state == GameState::MENU))
         {
+            window.setView(window.getDefaultView());
             exitButton.render();
         }
         window.display();
