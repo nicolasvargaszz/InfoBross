@@ -1,60 +1,48 @@
 #include "../include/cafe.h"
 #include <iostream>
 
-// One shared texture so multiple Cafe instances can reuse it.
-static sf::Texture s_cafeTexture;
 
-// Helper function: returns a vector with all your Café positions.
-std::vector<Cafe> createCafes()
-{
-    // Load the texture once (if not already loaded)
-    if (!s_cafeTexture.loadFromFile("../assets/sprites/CAFE.png"))
-    {
-        std::cerr << "Error loading the cafe texture\n";
-    }
-
-    // Create multiple Café objects.
-    // Each Cafe uses the static texture above through the constructor.
-    std::vector<Cafe> cafes;
-    cafes.emplace_back(sf::Vector2f(140.f, 480.f));
-
-
-    return cafes;
+bool Cafe::intersects(const sf::FloatRect& a, const sf::FloatRect& b) {
+    return (a.position.x < b.position.x + b.size.x &&
+            a.position.x + a.size.x > b.position.x &&
+            a.position.y < b.position.y + b.size.y &&
+            a.position.y + a.size.y > b.position.y);
 }
 
-// -----------------------------------------------------
-
-Cafe::Cafe(const sf::Vector2f& position)
-: sprite(s_cafeTexture) // <-- Initialize the sprite with the shared texture
+Cafe::Cafe(sf::Texture& texture, const sf::Vector2f& startPos)
+: sprite(texture)
 {
-    sprite.setPosition(position);
+    sprite.setPosition(startPos);
+    // scale to taste (match your other cafés)
     sprite.setScale({2.5f, 2.5f});
 }
 
-void Cafe::update(sf::FloatRect playerBounds, int& cafeCounter, bool& gameFinished)
-{
+void Cafe::update(const sf::FloatRect& playerBounds, int& cafeCounter, bool& gameFinished) {
     if (collected) return;
-    auto intersection = playerBounds.findIntersection(sprite.getGlobalBounds());
-    if (intersection.has_value())
-    {
-         collected = true;
-        // If the player collides, increment the count and move this café off-screen
-        cafeCounter++;
-        sprite.setPosition({-1000.f, -1000.f});
 
-        // If we want you to finish after collecting 5 cafés from this approach:
-        if (cafeCounter >= 10)
-        {
+    if (intersects(sprite.getGlobalBounds(), playerBounds)) {
+        collected = true;
+        cafeCounter++;
+
+        // optional: hide it
+        sprite.setPosition({-9999.f, -9999.f});
+
+        // win condition at 10 cafés
+        if (cafeCounter >= 10) {
             gameFinished = true;
         }
     }
 }
 
-void Cafe::render(sf::RenderWindow& window)
-{
+void Cafe::render(sf::RenderWindow& window) const {
     if (!collected)
         window.draw(sprite);
 }
+
+sf::FloatRect Cafe::getBounds() const {
+    return sprite.getGlobalBounds();
+}
+
 
 sf::FloatRect Cafe::getBounds() const
 {
