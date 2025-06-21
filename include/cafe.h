@@ -1,18 +1,27 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include<vector>
+
 class Cafe {
 public:
-    Cafe(const sf::Vector2f& position);
-    
-    void update(sf::FloatRect playerBounds, int& cafeCounter, bool& gameFinished);
-    void render(sf::RenderWindow& window);
+    // Construct with a shared texture and a world position
+    Cafe(sf::Texture& texture, const sf::Vector2f& startPos);
+
+    // Called each frame to detect collection
+    //   playerBounds: player's AABB
+    //   cafeCounter: increments when collected
+    //   gameFinished: set true if threshold reached
+    void update(const sf::FloatRect& playerBounds, int& cafeCounter, bool& gameFinished);
+
+    // Draw only if not yet collected
+    void render(sf::RenderWindow& window) const;
+
+    // Expose for optional collision queries
     sf::FloatRect getBounds() const;
 
 private:
     sf::Sprite sprite;
-    sf::Texture texture;
     bool collected = false;
-};
 
-std::vector<Cafe> createCafes(); // Function to create multiple Cafe objects
+    // Simple AABB intersection helper
+    static bool intersects(const sf::FloatRect& a, const sf::FloatRect& b);
+};
