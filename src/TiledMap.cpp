@@ -36,7 +36,10 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
     {
         std::cerr << "No se pudo cargar Idle.png (puerta)" << std::endl;
     }
-
+    //Cargar textura de los cages
+    if (!cafeTexture.loadFromFile("../assets/sprites/CAFE.png")) {
+        std::cerr << "Error loading CAFE.png for cafes\n";
+    }
     // Abrir y parsear JSON
     std::ifstream file(jsonMapPath);
     if (!file.is_open())
@@ -89,7 +92,12 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
             // Cafe
             if (rawID == 293)
             {
-                std::cout << "Cargando Cafe en la posición " << std::endl;
+                    int x = i % mapWidth;
+                    int y = i / mapWidth;
+                    float posX = float(x * tileWidth);
+                    float posY = float((y + 1) * tileHeight);
+                    cafes.emplace_back(cafeTexture, sf::Vector2f(posX, posY));
+                    continue; 
             }
             
             // Enemies
@@ -259,7 +267,14 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     target.draw(puertaEntrada, states);
     target.draw(puertaSalida, states);
-
+    
+    // Draw all cafés
+    for (const auto& cafe : cafes) {
+        cafe.render(const_cast<sf::RenderWindow&>(
+                      static_cast<const sf::RenderWindow&>(target)
+                  ));
+    }
+    //draw enemies 
     for (auto &enemy : const_cast<std::vector<Enemy>&>(enemies))
         enemy.render(const_cast<sf::RenderWindow&>(
             static_cast<const sf::RenderWindow&>(target)
