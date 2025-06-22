@@ -88,8 +88,8 @@
             "scale": 0.92,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 480.4347826086956,
-                "y": 319.56521739130426
+                "x": 395.65217391304344,
+                "y": 406.52173913043475
             }
         },
         "Terrain (32x32).tsx": {
@@ -107,6 +107,14 @@
             "viewCenter": {
                 "x": 646.6666666666666,
                 "y": 504
+            }
+        },
+        "map2.json": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 614,
+                "y": 1186
             }
         },
         "mapa1.json": {
@@ -133,8 +141,8 @@
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 480,
-                "y": 320
+                "x": 419,
+                "y": 276
             }
         }
     },
@@ -154,13 +162,13 @@
     ],
     "project": "oop.tiled-project",
     "recentFiles": [
+        "Mapa2.json",
+        "prueba.json",
         "Terrain (32x32).tsx",
         "Decorations (32x32).tsx",
         "Idle_Exit.tsx",
         "Idle_Enter.tsx",
-        "Mapa2.json",
         "pixil-frame-0.tsx",
-        "prueba.json",
         "CAFE.tsx",
         "map1.json",
         "mapa1.json",

@@ -22,7 +22,7 @@ using namespace sf;
 // Assets paths
 std::vector<std::string> maps = {
     "../assets/maps/map1.json",
-    "../assets/maps/Mapa2.json",
+    "../assets/maps/map2.json",
     "../assets/maps/porfavor.json"
 };
 std::vector<std::string> tilesetTextures = {
@@ -177,8 +177,9 @@ int main()
     // --- Cafes ---
     int cafeCounter = 0;
     bool gameFinished = false;
-    sf::Text cafeScoreText(font, "CAFE: 0", 30U);
+    sf::Text cafeScoreText(font, "CAFE: ", 30U);
     cafeScoreText.setFillColor(sf::Color::Blue);
+    cafeScoreText.setPosition({30.f, 30.f});
 
     Clock dtClock;
     View view = window.getDefaultView();
@@ -309,7 +310,7 @@ int main()
                 gameOverScreen.update(dt);
                 if (gameOverScreen.isFinished()) 
                 {
-                    window.close(); // O vuelve al menú si prefieres
+                    state = GameState::MENU; 
                 }
                 break;
             }
