@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 This is how to set up the game in a Windows machine. 
 
 The source code is the same, the execution of the file may differ depending on the OS
@@ -138,4 +139,4 @@ Feel free to adapt and expand it to match your specific repository/project struc
   **Happy Platforming!** :man_dancing: :dancer:
 
 </div>
->>>>>>> 9a8a848 (Update README.md)
+
