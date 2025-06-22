@@ -2,6 +2,11 @@
 #include "../include/TiledMap.h"  // only if you need TiledMap methods
 #include "../include/Player.h"
 #include <iostream>
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp> // para socket TCP
+#include <string>
+#include <sstream>
+
 
 //definition of intersects function
 
@@ -46,9 +51,9 @@ Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
     sprite.setTexture(sprite_1);
 
     sprite.setPosition(startPos);
-    sprite.setScale({1.f, 1.f}); // if we change this the size of the enemy will change
+    sprite.setScale({2.0f, 2.0f}); // if we change this the size of the enemy will change
     // general enemy properties
-    speed      = 10.f;
+    speed      = 15.f;
     direction  = 1.f; // 1 = right, -1 = left
     velocityY  = 0.f;
     onGround   = false;

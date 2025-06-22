@@ -15,6 +15,7 @@
 #include "../include/Dialogue.h"
 #include "../include/Menu.h" 
 #include "../include/ExitButton.h" 
+#include "../include/GameOver.h"
 
 using namespace sf;
 
@@ -34,7 +35,8 @@ enum class GameState {
     MENU,
     DIALOGUE,
     PLAYING,
-    GAME_OVER
+    GAME_OVER, 
+    WIN
 };
 
 int main()
@@ -123,6 +125,28 @@ int main()
         prompt.setFillColor(Color::White);
     }
 
+
+    // -- Message and window for winning the game --
+    std::vector<std::string> winLines = {
+        "Congratulations!",
+        "You have completed the game.",
+        "Thank you for playing!"
+    };
+    sf::Texture winTexture;
+    winTexture.loadFromFile("../assets/sprites/static_mathi.png");
+
+    Dialogue winDialogue(font, winLines, 20U, winTexture);
+
+    // -- Message and window for losing the game --
+    std::vector<std::string> gameOverLines = {
+        "Game Over!",
+        "You were defeated."
+    };
+    sf::Texture gameOverTexture;
+    gameOverTexture.loadFromFile("../assets/sprites/static_mathi.png");
+
+    GameOverScreen gameOverScreen(font, gameOverLines, gameOverTexture, window.getSize());
+
     // --- Gameplay Assets ---
     Texture playerTexture;
     if (!playerTexture.loadFromFile("../assets/sprites/static_mathi.png")) {
@@ -167,7 +191,7 @@ int main()
             if (exitButton.isClicked())
                 window.close();
 
-            switch(state)
+            switch(state) // events switch
             {
                 case GameState::MENU:
                     menu.handleEvent(levelManager); 
@@ -183,10 +207,13 @@ int main()
 
                 case GameState::PLAYING:
                     break;
-
+                
                 case GameState::GAME_OVER:
-                    if (ev.is<Event::KeyPressed>())
-                        window.close();
+                    gameOverScreen.handleEvent(ev);
+                    break;
+                
+                case GameState::WIN:
+                    winDialogue.handleEvent(ev);
                     break;
             }
 
@@ -195,7 +222,7 @@ int main()
 
         exitButton.update();
 
-        switch(state)
+        switch(state) //main logic/update
         {
             case GameState::MENU:
             {
@@ -217,7 +244,11 @@ int main()
                     player.handleInput();
                     player.applyPhysics(dt, *levelManager.getCurrentMap());
                     player.update(dt);
-                    levelManager.getCurrentMap()->update(dt);
+                    if (levelManager.getCurrentMap()->update(dt))
+                    {
+                        state = GameState::GAME_OVER;
+                        gameOverScreen.reset();
+                    };
                     fade.update();
 
                     levelManager.getCurrentMap()->getPuertaSalida().update(dt);
@@ -240,9 +271,12 @@ int main()
                     // 2) Refresh the on-screen text only when it changes
                     cafeScoreText.setString("CAFE: " + std::to_string(cafeCounter));
 
-                    // 3) If your Cafe::update sets gameFinished when you hit your target:
+                    // 3) If your Cafe::update sets gameFinished when you hit your target: game won
                     if (gameFinished)
-                        state = GameState::GAME_OVER;
+                    {
+                        state = GameState::WIN;
+                        winDialogue.reset();
+                    }
 
 
                     // Puerta
@@ -266,7 +300,23 @@ int main()
                 break;
             }
             case GameState::GAME_OVER:
+            {
+                gameOverScreen.update(dt);
+                if (gameOverScreen.isFinished()) 
+                {
+                    window.close(); // O vuelve al menú si prefieres
+                }
                 break;
+            }
+            case GameState::WIN:
+            {
+                winDialogue.update(dt);
+                if (winDialogue.isFinished()) {
+                    state = GameState::MENU;
+                    winDialogue.reset();
+                }
+                break;
+            }
         }
 
         window.clear();
@@ -298,6 +348,10 @@ int main()
                 break;
 
             case GameState::GAME_OVER:
+                gameOverScreen.draw(window);
+                break;
+            case GameState::WIN:
+                winDialogue.draw(window);
                 break;
         }
 

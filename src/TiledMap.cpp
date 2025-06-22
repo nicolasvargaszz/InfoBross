@@ -223,7 +223,7 @@ sf::Vector2f TiledMap::getPixelSize() const
     return sf::Vector2f(static_cast<float>(mapWidth * tileWidth), static_cast<float>(mapHeight * tileHeight));
 }
 
-void TiledMap::update(float dt) {
+bool TiledMap::update(float dt) {
     puertaEntrada.update(dt);
     puertaSalida.update(dt);
 
@@ -254,11 +254,13 @@ void TiledMap::update(float dt) {
                 else
                 {
                     std::cout << "Game Over!" << std::endl;
-                    playerPtr->setPosition({-9999.f, -9999.f});
+                    // playerPtr->setPosition({-9999.f, -9999.f}); this use to sent the player off-screen, but we don't want that anymore
+                    return true; // this indicates the player has been killed by an enemy
                 }
             }
         }
     }
+    return false; // No player killed by enemy
 }
 
 void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
