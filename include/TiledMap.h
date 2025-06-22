@@ -31,7 +31,7 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 
     // Door
-    void update(float dt);
+    bool update(float dt);
     AnimatedDoor& getPuertaEntrada();
     AnimatedDoor& getPuertaSalida();
 

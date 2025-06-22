@@ -132,8 +132,12 @@ int main()
         "You have completed the game.",
         "Thank you for playing!"
     };
+
     sf::Texture winTexture;
-    winTexture.loadFromFile("../assets/sprites/static_mathi.png");
+    if (!winTexture.loadFromFile("../assets/sprites/static_mathi.png")) {
+        std::cerr << "No se pudo cargar imagen ganar\n";
+        return -1;
+    }
 
     Dialogue winDialogue(font, winLines, 20U, winTexture);
 
@@ -142,8 +146,12 @@ int main()
         "Game Over!",
         "You were defeated."
     };
+
     sf::Texture gameOverTexture;
-    gameOverTexture.loadFromFile("../assets/sprites/static_mathi.png");
+    if (!gameOverTexture.loadFromFile("../assets/sprites/static_mathi.png")) {
+        std::cerr << "No se pudo cargar imagen perder\n";
+        return -1;
+    }
 
     GameOverScreen gameOverScreen(font, gameOverLines, gameOverTexture, window.getSize());
 
@@ -171,13 +179,10 @@ int main()
     bool gameFinished = false;
     sf::Text cafeScoreText(font, "CAFE: 0", 30U);
     cafeScoreText.setFillColor(sf::Color::Blue);
-    cafeScoreText.setPosition({30.f, 30.f});
-
 
     Clock dtClock;
     View view = window.getDefaultView();
     GameState state = GameState::MENU;
-
 
     while (window.isOpen())
     {

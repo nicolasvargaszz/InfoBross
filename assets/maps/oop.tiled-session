@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "prueba.json",
+    "activeFile": "map1.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -69,6 +69,7 @@
             }
         },
         "CAFE.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Decorations (32x32).tsx": {
@@ -87,8 +88,8 @@
             "scale": 0.92,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 395.65217391304344,
-                "y": 406.52173913043475
+                "x": 480.4347826086956,
+                "y": 319.56521739130426
             }
         },
         "Terrain (32x32).tsx": {
@@ -102,10 +103,10 @@
         },
         "map1.json": {
             "scale": 0.75,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 558.6666666666666,
-                "y": 560
+                "x": 646.6666666666666,
+                "y": 504
             }
         },
         "mapa1.json": {
@@ -132,8 +133,8 @@
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 419,
-                "y": 276
+                "x": 480,
+                "y": 320
             }
         }
     },
@@ -147,15 +148,12 @@
         "Idle_Enter.tsx",
         "Mapa2.json",
         "pixil-frame-0.tsx",
+        "prueba.json",
         "map1.json",
-        "prueba.json"
+        "CAFE.tsx"
     ],
     "project": "oop.tiled-project",
     "recentFiles": [
-        "CAFE.tsx",
-        "mapa1.json",
-        "map1.json",
-        "enemigo_test_no_es_el_enemigo_real.tsx",
         "Terrain (32x32).tsx",
         "Decorations (32x32).tsx",
         "Idle_Exit.tsx",
@@ -163,6 +161,10 @@
         "Mapa2.json",
         "pixil-frame-0.tsx",
         "prueba.json",
+        "CAFE.tsx",
+        "map1.json",
+        "mapa1.json",
+        "enemigo_test_no_es_el_enemigo_real.tsx",
         "C:/Users/GIGABYTE/Downloads/sin nombre.jpg"
     ],
     "tileset.lastUsedFormat": "tsx",
