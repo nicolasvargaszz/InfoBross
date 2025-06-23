@@ -1,4 +1,5 @@
 #include "../include/TiledMap.h"
+#include<SFML/Audio.hpp>
 #include <nlohmann/json.hpp>
 #include "../include/Player.h"
 #include <fstream>
@@ -223,6 +224,18 @@ sf::Vector2f TiledMap::getPixelSize() const
     return sf::Vector2f(static_cast<float>(mapWidth * tileWidth), static_cast<float>(mapHeight * tileHeight));
 }
 
+sf::Sound* killEnemySoundPtr = nullptr;
+
+void TiledMap::setKillEnemySound(sf::Sound* sound) {
+    killEnemySoundPtr = sound;
+}
+
+sf::Sound* deathSoundPtr = nullptr;
+
+void TiledMap::setDeathSound(sf::Sound* sound) {
+    deathSoundPtr = sound;
+}
+
 bool TiledMap::update(float dt) {
     puertaEntrada.update(dt);
     puertaSalida.update(dt);
@@ -230,7 +243,7 @@ bool TiledMap::update(float dt) {
     //update for enemies:
     for(auto &enemy : enemies)
     {
-        enemy.update(dt, this, playerPtr);
+        enemy.update(dt, this, playerPtr, killEnemySoundPtr);
 
         if (playerPtr) // Only if we have a valid pointer
         {
@@ -254,6 +267,7 @@ bool TiledMap::update(float dt) {
                 else
                 {
                     std::cout << "Game Over!" << std::endl;
+                    if (deathSoundPtr) deathSoundPtr->play();
                     // playerPtr->setPosition({-9999.f, -9999.f}); this use to sent the player off-screen, but we don't want that anymore
                     return true; // this indicates the player has been killed by an enemy
                 }

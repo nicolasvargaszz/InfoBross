@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 class TiledMap;
 class Player;
@@ -9,7 +10,7 @@ public:
     Enemy(sf::Texture& texture, const sf::Vector2f& startPos);
 
     // update pasa un puntero TiledMap (ahora sí compilará)
-    void update(float deltaTime, TiledMap* map, Player* player);
+    void update(float deltaTime, TiledMap* map, Player* player, sf::Sound* killSound);
 
     sf::FloatRect getBounds() const;
 

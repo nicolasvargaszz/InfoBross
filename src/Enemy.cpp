@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp> // para socket TCP
 #include <string>
-#include <sstream>
+
 
 
 //definition of intersects function
@@ -62,7 +62,7 @@ Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
     currentFrame = 0; // start with the first frame
 }
 
-void Enemy::update(float deltaTime, TiledMap* map, Player* player)
+void Enemy::update(float deltaTime, TiledMap* map, Player* player, sf::Sound* killSound)
 {
     // step no 3 for the enemy animation:
     animationTime += deltaTime;
@@ -143,6 +143,7 @@ void Enemy::update(float deltaTime, TiledMap* map, Player* player)
             {
                 // Kill enemy
                 sprite.setPosition({-9999.f, -9999.f});
+                if(killSound) killSound->play();
                 std::cout << "Enemy killed by player!\n";
             }
             else

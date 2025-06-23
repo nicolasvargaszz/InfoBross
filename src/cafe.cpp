@@ -1,4 +1,5 @@
-#include "../include/Cafe.h"
+#include "../include/cafe.h"
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 
@@ -15,6 +16,13 @@ Cafe::Cafe(sf::Texture& texture, const sf::Vector2f& startPos)
     sprite.setPosition(startPos);
     sprite.setScale({1.0f, 1.0f});
 }
+
+sf::Sound* Cafe::collectSound = nullptr;
+
+void Cafe::setCollectSound(sf::Sound* sound) {
+    collectSound = sound;
+}
+
 
 void Cafe::update(const sf::FloatRect& playerBounds, int& cafeCounter, bool& gameFinished) {
     if (collected) return;
@@ -35,6 +43,7 @@ void Cafe::update(const sf::FloatRect& playerBounds, int& cafeCounter, bool& gam
         collected = true;
         cafeCounter++;
 
+        if(collectSound) collectSound->play();
         // optional: hide it
         sprite.setPosition({-9999.f, -9999.f});
 

@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include "AnimatedDoor.h"
 #include "Enemy.h"
-#include "Cafe.h"
+#include "cafe.h"
 
 class Player; // Forward declaration para evitar ciclo de includes
 
@@ -37,6 +37,12 @@ public:
 
     // player
     void setPlayer(Player* p) { playerPtr = p; }
+    // SOUNDS:
+    // Enemies 
+    void setKillEnemySound(sf::Sound* sound);
+
+    //game over
+    void setDeathSound(sf::Sound* sound);
     
 
 private:

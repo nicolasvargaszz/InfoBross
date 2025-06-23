@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-
+#include <SFML/Audio.hpp>
 class Cafe {
 public:
     // Construct with a shared texture and a world position
@@ -18,6 +18,8 @@ public:
     // Expose for optional collision queries
     sf::FloatRect getBounds() const;
 
+    static void setCollectSound(sf::Sound* sound);
+
 private:
     sf::Sprite sprite;
     bool collected = false;
@@ -29,4 +31,6 @@ private:
     float floatOffset = 0.f;
     bool goingUp = true;
     sf::Vector2f originalPos;
+
+    static sf::Sound* collectSound;
 };

@@ -64,14 +64,44 @@ int main()
         std::cerr << "No se pudo cargar imagen de fondo\n";
         return -1;
     }
-
+    // --- Sounds Effects ---
     sf::SoundBuffer clickBuffer;
     if (!clickBuffer.loadFromFile("../assets/sounds/game_click.mp3")) {
     std::cerr << "Error cargando sonido de clic.\n";
     }
+    // --- kill the enemy sound ---
+    sf::SoundBuffer killEnemyBuffer;
+    if (!killEnemyBuffer.loadFromFile("../assets/sounds/kill_enemy.mp3")) {
+        std::cerr << "Error cargando sonido de matar enemigo.\n";
+    }
+    sf::Sound killEnemySound(killEnemyBuffer);
+    levelManager.getCurrentMap()->setKillEnemySound(&killEnemySound);
 
+    // --- GAME Over Sound ---
+    sf::SoundBuffer deathBuffer;
+    if (!deathBuffer.loadFromFile("../assets/sounds/DEATH.mp3")) {
+        std::cerr << "No se pudo cargar el sonido de muerte\n";
+    }
+    sf::Sound deathSound(deathBuffer);
+    levelManager.getCurrentMap()->setDeathSound(&deathSound);
+
+    // --- CAFE Sound ---
+    sf::SoundBuffer cafeBuffer;
+    if (!cafeBuffer.loadFromFile("../assets/sounds/CAFE.mp3")) {
+        std::cerr << "No se pudo cargar el sonido de café\n";
+    }
+    sf::Sound cafeSound(cafeBuffer);
+    Cafe::setCollectSound(&cafeSound);
     Menu menu(window, font, mode, backgroundTexture, clickBuffer);
 
+
+    // --- WINNING Sound ---
+    sf::SoundBuffer winBuffer;
+    if (!winBuffer.loadFromFile("../assets/sounds/WINNING.mp3")) {
+        std::cerr << "No se pudo cargar el sonido de victoria\n";
+    }
+    sf::Sound winSound(winBuffer);
+    
     // --- Botón de Salir ---
     ExitButton exitButton(window, font);
 
@@ -282,6 +312,7 @@ int main()
                     {
                         state = GameState::WIN;
                         winDialogue.reset();
+                        winSound.play();
                     }
 
 
