@@ -448,6 +448,13 @@ int main()
                 break;
 
             case GameState::GAME_OVER:
+                window.setView(window.getDefaultView());
+                winBgSprite.setScale({
+                    float(window.getSize().x) / winBgTexture.getSize().x,
+                    float(window.getSize().y) / winBgTexture.getSize().y
+                });
+                winBgSprite.setPosition({0.f, 0.f});
+                window.draw(winBgSprite);
                 gameOverScreen.draw(window);
                 break;
             case GameState::WIN:
