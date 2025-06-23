@@ -83,7 +83,19 @@ library/        # External libraries (SFML, nlohmann/json)
 - [SFML](https://www.sfml-dev.org/)
 - [nlohmann/json](https://github.com/nlohmann/json)
 - Sprites, sounds, and fonts: see `assets/` for attributions.
+- Pixel arts: Diego Corvalan
+- Music: Nicolás Vargas
+- Assets: https://pixelfrog-assets.itch.io/kings-and-pigs (It's a free Assets this is in the official website: These assets are released under a Creative Commons Zero (CC0) license.
+You can distribute, remix, adapt, and build upon the material in any medium or format, even for commercial purposes.
 
+Attribution is not required.
+
+If you want to have a closer look at the license, check here. Have fun! :))
+
+- Maps: Cesar Oyola Using TiledMap And kings & pig assets.
+- Code, physics & logic: Alfredo Vargas, Mathias Drews, Sebastian Benegas.
+- Sounds: "Oof" from the 2002 game Messiah game.
+- For any complain there's the comments session.
 ---
 
 ## 📜 License
