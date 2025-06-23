@@ -3,13 +3,60 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map1.json",
+    "activeFile": "pixil-frame-0.tsx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "Todos los archivos (*)",
     "fileStates": {
         "": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/Infobros/InfoBross-main/assets/maps/Decorations (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/Infobros/InfoBross-main/assets/maps/Idle_Enter.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/Infobros/InfoBross-main/assets/maps/Idle_Exit.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/Infobros/InfoBross-main/assets/maps/Terrain (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/assets/maps/Decorations (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/assets/maps/Idle_Enter.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/assets/maps/Idle_Exit.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Desktop/Super-Mario-Bros-Main/assets/assets/maps/Terrain (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/88D597A9-FCC0-49AB-B5CB-06354C3E9A54/mapa_a.tmx": {
+            "scale": 0.2662,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 738.1667918858002,
+                "y": 740.0450788880541
+            }
+        },
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/Infobros/InfoBross-main/assets/maps/Decorations (32x32).tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/Infobros/InfoBross-main/assets/maps/Idle_Enter.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/Infobros/InfoBross-main/assets/maps/Idle_Exit.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/Infobros/InfoBross-main/assets/maps/Terrain (32x32).tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1
         },
         "C:/Mapas/Decorations (32x32).tsx": {
@@ -23,14 +70,6 @@
         },
         "C:/Mapas/Terrain (32x32).tsx": {
             "scaleInDock": 1
-        },
-        "C:/Users/GIGABYTE/Downloads/sin nombre.jpg": {
-            "scale": 1,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 434,
-                "y": 276
-            }
         },
         "C:/Users/Mathias/Desktop/InfoBross-master/InfoBross/assets/maps/Decorations (32x32).tsx": {
             "scaleInDock": 1
@@ -69,27 +108,28 @@
             }
         },
         "CAFE.tsx": {
-            "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInDock": 1
         },
         "Decorations (32x32).tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Idle_Enter.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Idle_Exit.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 1.09
         },
         "Mapa2.json": {
             "scale": 0.92,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 395.65217391304344,
-                "y": 406.52173913043475
+                "x": 37.5,
+                "y": 259.7826086956522
             }
         },
         "Terrain (32x32).tsx": {
@@ -102,47 +142,88 @@
             "scaleInEditor": 0.3255
         },
         "map1.json": {
-            "scale": 0.75,
-            "selectedLayer": 1,
+            "scale": 0.7900173611111111,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 646.6666666666666,
-                "y": 504
+                "x": 575.9367102516208,
+                "y": 576.5696077354137
             }
         },
         "map2.json": {
-            "scale": 0.5,
-            "selectedLayer": 1,
-            "viewCenter": {
-                "x": 614,
-                "y": 1186
-            }
-        },
-        "mapa1.json": {
-            "scale": 0.75,
+            "scale": 0.38433277027027024,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 635.9999999999999,
-                "y": 610.6666666666665
+                "x": 593.2359081419625,
+                "y": 1185.1708603450172
+            }
+        },
+        "mapa_a.tmx": {
+            "scale": 0.47401041666666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1150.8185913635864,
+                "y": 1090.6933304032523
+            }
+        },
+        "mapa_a_CESAR.json": {
+            "scale": 0.3906,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1312.0839733742962,
+                "y": 1052.2273425499234
+            }
+        },
+        "mapa_a_CESAR.tmj": {
+            "scale": 0.3862,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1145.7793889176592,
+                "y": 1087.5194199896428
+            }
+        },
+        "mapa_cesar_pls.json": {
+            "scale": 0.5376,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1161.6443452380954,
+                "y": 1201.6369047619046
+            }
+        },
+        "mapa_cesar_pls.tmj": {
+            "scale": 0.3874,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1153.8461538461538,
+                "y": 992.5141972121836
+            }
+        },
+        "mapa_cesar_porfavor.tmj": {
+            "scale": 0.4681,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 404.8280281991026,
+                "y": 741.2945951719719
             }
         },
         "pixil-frame-0.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "porfavor.json": {
             "scale": 0.5695,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 478.4899034240562,
-                "y": 319.5785776997366
+                "x": 477.6119402985075,
+                "y": 318.70061457418785
             }
         },
         "prueba.json": {
-            "scale": 1,
+            "scale": 1.1211979166666666,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 419,
-                "y": 276
+                "x": 479.8439169415154,
+                "y": 319.74729409578674
             }
         }
     },
@@ -150,30 +231,23 @@
     "map.height": 20,
     "map.lastUsedFormat": "json",
     "openFiles": [
-        "Terrain (32x32).tsx",
-        "Decorations (32x32).tsx",
-        "Idle_Exit.tsx",
-        "Idle_Enter.tsx",
-        "Mapa2.json",
         "pixil-frame-0.tsx",
-        "prueba.json",
-        "map1.json",
-        "CAFE.tsx"
+        "Idle_Exit.tsx"
     ],
     "project": "oop.tiled-project",
     "recentFiles": [
+        "mapa_cesar_pls.json",
+        "mapa_cesar_porfavor.tmj",
+        "porfavor.json",
+        "mapa_a_CESAR.json",
         "Mapa2.json",
-        "prueba.json",
-        "Terrain (32x32).tsx",
-        "Decorations (32x32).tsx",
+        "mapa_a.tmx",
         "Idle_Exit.tsx",
-        "Idle_Enter.tsx",
+        "/Users/nicolasvargas/Library/Containers/net.whatsapp.WhatsApp/Data/tmp/documents/88D597A9-FCC0-49AB-B5CB-06354C3E9A54/mapa_a.tmx",
         "pixil-frame-0.tsx",
-        "CAFE.tsx",
-        "map1.json",
-        "mapa1.json",
-        "enemigo_test_no_es_el_enemigo_real.tsx",
-        "C:/Users/GIGABYTE/Downloads/sin nombre.jpg"
+        "Decorations (32x32).tsx",
+        "Idle_Enter.tsx",
+        "Terrain (32x32).tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

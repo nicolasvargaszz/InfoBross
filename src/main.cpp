@@ -64,6 +64,34 @@ int main()
         std::cerr << "No se pudo cargar imagen de fondo\n";
         return -1;
     }
+
+    // BACKGROUNDS
+
+    // -- Start Background Image --
+    sf::Texture dialogueBgTexture;
+    if (!dialogueBgTexture.loadFromFile("../assets/tilesets/background_start.jpeg")) { // Use your actual path
+        std::cerr << "No se pudo cargar el fondo de diálogo\n";
+    }
+    sf::Sprite dialogueBgSprite(dialogueBgTexture);
+    dialogueBgSprite.setScale({
+    float(window.getSize().x) / dialogueBgTexture.getSize().x,
+    float(window.getSize().y) / dialogueBgTexture.getSize().y
+    });
+    dialogueBgSprite.setPosition({0.f, 0.f});
+
+    sf::Texture winBgTexture;
+    if (!winBgTexture.loadFromFile("../assets/tilesets/background_winning.jpeg")) { // Usa tu ruta real
+        std::cerr << "No se pudo cargar el fondo de victoria\n";
+    }
+    sf::Sprite winBgSprite(winBgTexture);
+    winBgSprite.setScale({
+        float(window.getSize().x) / winBgTexture.getSize().x,
+        float(window.getSize().y) / winBgTexture.getSize().y
+    });
+    winBgSprite.setPosition({0.f, 0.f});
+
+    //SOUNDS EFECTS
+
     // --- Sounds Effects ---
     sf::SoundBuffer clickBuffer;
     if (!clickBuffer.loadFromFile("../assets/sounds/game_click.mp3")) {
@@ -226,7 +254,6 @@ int main()
             exitButton.handleEvent(ev);
             if (exitButton.isClicked())
                 window.close();
-
             switch(state) // events switch
             {
                 case GameState::MENU:
@@ -365,6 +392,13 @@ int main()
                 break;
 
             case GameState::DIALOGUE:
+                window.setView(window.getDefaultView());
+                dialogueBgSprite.setScale({
+                float(window.getSize().x) / dialogueBgTexture.getSize().x,
+                float(window.getSize().y) / dialogueBgTexture.getSize().y
+                });
+                dialogueBgSprite.setPosition({0.f, 0.f});
+                window.draw(dialogueBgSprite);
                 dialogue.draw(window);
                 break;
 
@@ -388,6 +422,13 @@ int main()
                 gameOverScreen.draw(window);
                 break;
             case GameState::WIN:
+                window.setView(window.getDefaultView());
+                winBgSprite.setScale({
+                    float(window.getSize().x) / winBgTexture.getSize().x,
+                    float(window.getSize().y) / winBgTexture.getSize().y
+                });
+                winBgSprite.setPosition({0.f, 0.f});
+                window.draw(winBgSprite);
                 winDialogue.draw(window);
                 break;
         }
