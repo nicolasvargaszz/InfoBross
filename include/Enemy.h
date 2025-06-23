@@ -26,4 +26,5 @@ private:
     float animationTime; 
     int currentFrame; 
     bool onGround;
+    float collisionCooldown;
 };

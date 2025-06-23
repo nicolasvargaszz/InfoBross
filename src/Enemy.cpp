@@ -33,6 +33,7 @@ static sf::Texture sprite_4;
 
 Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
 : sprite(texture)
+, collisionCooldown(0.f)
 {
     if (!sprite_1.loadFromFile("../assets/sprites/enemy/sprite_1.png")) {
         std::cerr << "Error: No se pudo cargar sprite_2.png\n";
@@ -51,7 +52,7 @@ Enemy::Enemy(sf::Texture& texture, const sf::Vector2f& startPos)
     sprite.setTexture(sprite_1);
 
     sprite.setPosition(startPos);
-    sprite.setScale({2.0f, 2.0f}); // if we change this the size of the enemy will change
+    sprite.setScale({1.0f, 1.0f}); // if we change this the size of the enemy will change
     // general enemy properties
     speed      = 15.f;
     direction  = 1.f; // 1 = right, -1 = left
@@ -78,6 +79,9 @@ void Enemy::update(float deltaTime, TiledMap* map, Player* player, sf::Sound* ki
             case 3: sprite.setTexture(sprite_4); break;
         }
     }
+    // cooldown for collision
+    if (collisionCooldown > 0.f)
+        collisionCooldown -= deltaTime;
 
     // 1. Aplicar gravedad si no está en el suelo
     const float gravity = 400.f;
@@ -89,23 +93,20 @@ void Enemy::update(float deltaTime, TiledMap* map, Player* player, sf::Sound* ki
     //------------------------------------------------------
     float moveX = speed * direction * deltaTime;
     sprite.move({moveX, 0.f});
-
+    bool collidedX = false;
     if (map && map->isColliding(sprite.getGlobalBounds()))
     {
         // Revertir el movimiento en X
         sprite.move({-moveX, 0.f});
-
-        // Opcional: invertir dirección para “rebotar”
-        direction = -direction;
-        if (direction > 0.f)
-        {
-            sprite.setScale({-1.f, 1.f});
-        }
-        else
-        {
-            sprite.setScale({1.f, 1.f});
-        }
+        collidedX = true; // Marcar colisión en X
     }
+    // only invert direction if there was a collision and cooldown <=0
+    if (collidedX && collisionCooldown <= 0.f)
+    {
+        direction = -direction;
+        collisionCooldown = 0.3f; // 300 ms de cooldown
+    }
+    sprite.setScale({direction, 1.f});
 
     //------------------------------------------------------
     // 3. Mover en Y y checar colisión con el mapa
