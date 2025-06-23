@@ -31,6 +31,7 @@ std::vector<std::string> tilesetTextures = {
     "../assets/tilesets/Idle.png"
 };
 
+
 enum class GameState {
     MENU,
     DIALOGUE,
@@ -156,7 +157,18 @@ int main()
         "I need to pass Data structures and OOP...",
         "I will study i must pass this course..."
     };
-    Dialogue dialogue(font, dialogueLines, 20U, staticMathiTexture);
+    std::vector<std::string> wakeUpSprites = {
+    "../assets/sprites/Mathiwakeup/WAKEUP_0.png",
+    "../assets/sprites/Mathiwakeup/WAKE_UP1.png",
+    "../assets/sprites/Mathiwakeup/WAKE_UP2.png",
+    "../assets/sprites/studying_mathi/study_0.png",
+    "../assets/sprites/studying_mathi/study_1.png",
+    "../assets/sprites/studying_mathi/study_2.png",
+    "../assets/sprites/studying_mathi/study_3.png",
+    "../assets/sprites/studying_mathi/study_4.png",
+    "../assets/sprites/studying_mathi/study_5.png",
+    };
+    Dialogue dialogue(font, dialogueLines, 20U, wakeUpSprites);
 
     // --- Title Screen Text ---
     Text title_text(font, "INFOBROS", 128U);
@@ -197,7 +209,11 @@ int main()
         return -1;
     }
 
-    Dialogue winDialogue(font, winLines, 20U, winTexture);
+    std::vector<std::string> happySprites = {
+    "../assets/sprites/happy_mathi/happy_0.png",
+    "../assets/sprites/happy_mathi/happy_1.png"
+    };
+    Dialogue winDialogue(font, winLines, 20U, happySprites);
 
     // -- Message and window for losing the game --
     std::vector<std::string> gameOverLines = {
@@ -211,7 +227,20 @@ int main()
         return -1;
     }
 
-    GameOverScreen gameOverScreen(font, gameOverLines, gameOverTexture, window.getSize());
+    std::vector<std::string> crySprites = {
+    "../assets/sprites/crying_mathi/cry_0.png",
+    "../assets/sprites/crying_mathi/cry_1.png",
+    "../assets/sprites/crying_mathi/cry_2.png",
+    "../assets/sprites/crying_mathi/cry_3.png",
+    "../assets/sprites/crying_mathi/cry_4.png",
+    "../assets/sprites/crying_mathi/cry_5.png",
+    "../assets/sprites/crying_mathi/cry_6.png",
+    "../assets/sprites/crying_mathi/cry_7.png",
+    };
+    
+    Dialogue gameOverDialogue(font, gameOverLines, 20U, crySprites);
+
+    GameOverScreen gameOverScreen(font, gameOverLines, window.getSize());
 
     // --- Gameplay Assets ---
     Texture playerTexture;

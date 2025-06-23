@@ -1,23 +1,24 @@
-// Dialogue.h
 #pragma once
 
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <memory>
 using namespace sf;
 
 class Dialogue {
 public:
-    Dialogue(sf::Font& font,
-        const std::vector<std::string>& lines,
-        unsigned int charSize,
-        const sf::Texture& imagePath);
-        void reset();
-        void handleEvent(const Event& ev);
-        void update(float dt);
-        void draw(RenderWindow& window);
-        bool isFinished() const;
-    
+    Dialogue(Font& font,
+             const std::vector<std::string>& lines,
+             unsigned int charSize,
+             const std::vector<std::string>& spritePaths);
+
+    void reset();
+    void handleEvent(const Event& ev);
+    void update(float dt);
+    void draw(RenderWindow& window);
+    bool isFinished() const;
+
 private:
     enum class DialogueState { TYPING, WAITING_FOR_NEXT, FINISHED };
     std::vector<std::string> dialogueLines;
@@ -28,12 +29,15 @@ private:
     float TYPEWRITER_CHAR_INTERVAL;
     DialogueState currentDialogueState;
 
+    size_t currentAnimIndex = 0;
+    float animTimer = 0.f;
+    float animFrameTime = 0.5f;
+
     Font& font;
-    Sprite* sprite;
     Text dialogueText;
     FloatRect dialogueTextBounds;
     RectangleShape dialogueBox;
 
-    sf::Sprite staticSprite;
-    sf::Texture staticTexture;
+    std::vector<std::shared_ptr<sf::Texture>> animTextures;
+    std::vector<sf::Sprite> animSprites;
 };

@@ -1,36 +1,43 @@
 #include "../include/Dialogue.h"
+#include <memory>
 #include <iostream>
-// Constructor: initializes dialogue lines, text, and box
+
+// Constructor: ahora acepta un vector de rutas de sprites
 Dialogue::Dialogue(Font& fontRef,
                    const std::vector<std::string>& lines,
                    unsigned int charSize,
-                   const sf::Texture& imagePath)  // Interval is fixed by TYPEWRITER_CHAR_INTERVAL
+                   const std::vector<std::string>& spritePaths)
     : dialogueLines(lines)
     , currentLineIndex(0)
     , stringToDisplayForTypewriter("")
-    , TYPEWRITER_CHAR_INTERVAL (0.05f)
+    , TYPEWRITER_CHAR_INTERVAL(0.05f)
     , currentCharTypewriterIndex(0)
     , currentDialogueState(DialogueState::TYPING)
     , font(fontRef)
     , dialogueText(fontRef, "", charSize)
-    , staticSprite(imagePath)
-    , staticTexture(imagePath)
+    , animTextures()
+    , animSprites()
+    , currentAnimIndex(0)
+    , animTimer(0.f)
+    , animFrameTime(0.5f)
 {
-    
-    // Initialize typewriter clock
     typewriterClock.restart();
-
-    // Configure text appearance
     dialogueText.setFillColor(Color::White);
-
-    // Configure dialogue box (size will be set in draw)
     dialogueBox.setFillColor(Color(0, 0, 0, 150));
 
-    // Manage the Size of Sprite
-    staticSprite.setScale({-10.f, 10.f});
+    // Cargar sprites animados según el vector recibido
+    for (const auto& path : spritePaths) {
+    auto tex = std::make_shared<sf::Texture>();
+    if (tex->loadFromFile(path)) {
+        animTextures.push_back(tex);
+        animSprites.emplace_back(*tex);
+        animSprites.back().setScale({4.f, 4.f});
+    } else {
+        std::cerr << "No se pudo cargar el sprite: " << path << std::endl;
+    }
+    }
 }
 
-// Reset dialogue to start over
 void Dialogue::reset() {
     currentLineIndex = 0;
     stringToDisplayForTypewriter.clear();
@@ -38,19 +45,18 @@ void Dialogue::reset() {
     currentDialogueState = DialogueState::TYPING;
     dialogueText.setString("");
     typewriterClock.restart();
+    animTimer = 0.f;
+    currentAnimIndex = 0;
 }
 
 void Dialogue::handleEvent(const Event& ev) {
-    // Use SFML-3 event API to check for key presses
     if (ev.is<sf::Event::KeyPressed>()) {
         if (currentDialogueState == DialogueState::TYPING) {
-            // Complete current line immediately
             stringToDisplayForTypewriter = dialogueLines[currentLineIndex];
             currentCharTypewriterIndex = static_cast<unsigned int>(stringToDisplayForTypewriter.length());
             dialogueText.setString(stringToDisplayForTypewriter + "\n(Press any key to continue)");
             currentDialogueState = DialogueState::WAITING_FOR_NEXT;
         } else if (currentDialogueState == DialogueState::WAITING_FOR_NEXT) {
-            // Move to next line or finish
             ++currentLineIndex;
             if (currentLineIndex < static_cast<int>(dialogueLines.size())) {
                 stringToDisplayForTypewriter.clear();
@@ -64,41 +70,41 @@ void Dialogue::handleEvent(const Event& ev) {
         }
     }
 }
-// Update typewriter effect based on elapsed time
+
 void Dialogue::update(float dt) {
+    if (currentDialogueState == DialogueState::TYPING) {
+        if (typewriterClock.getElapsedTime().asSeconds() >= TYPEWRITER_CHAR_INTERVAL) {
+            typewriterClock.restart();
+            const std::string& line = dialogueLines[currentLineIndex];
+            if (currentCharTypewriterIndex < line.size()) {
+                stringToDisplayForTypewriter += line[currentCharTypewriterIndex++];
+                dialogueText.setString(stringToDisplayForTypewriter);
+            } else {
+                dialogueText.setString(stringToDisplayForTypewriter + "\n(Press any key to continue)");
+                currentDialogueState = DialogueState::WAITING_FOR_NEXT;
+            }
+        }
+    }
 
-    if (currentDialogueState != DialogueState::TYPING)
-        return;
-
-    // Use the clock to ensure consistent intervals
-    if (typewriterClock.getElapsedTime().asSeconds() >= TYPEWRITER_CHAR_INTERVAL) {
-        typewriterClock.restart();
-        const std::string& line = dialogueLines[currentLineIndex];
-        if (currentCharTypewriterIndex < line.size()) {
-            // Append next character
-            stringToDisplayForTypewriter += line[currentCharTypewriterIndex++];
-            dialogueText.setString(stringToDisplayForTypewriter);
-        } else {
-            // Line complete: prompt user to press key
-            dialogueText.setString(stringToDisplayForTypewriter + "\n(Press any key to continue)");
-            currentDialogueState = DialogueState::WAITING_FOR_NEXT;
+    // Animación de sprites
+    if (!animSprites.empty()) {
+        animTimer += dt;
+        if (animTimer >= animFrameTime) {
+            animTimer = 0.f;
+            currentAnimIndex = (currentAnimIndex + 1) % animSprites.size();
         }
     }
 }
 
-// Render the dialogue box and text
 void Dialogue::draw(RenderWindow& window) {
-    // Draw the sprite if loaded
-    sf::FloatRect bounds = staticSprite.getGlobalBounds();
-    staticSprite.setPosition({
-        50.f + bounds.size.x,
-        window.getSize().y - bounds.size.y - 50.f
-    });
-    if (staticTexture.getSize().x > 0 && staticTexture.getSize().y > 0) {
-        window.draw(staticSprite);
+    // Dibuja el sprite animado (si hay)
+    if (!animSprites.empty()) {
+        auto& sprite = animSprites[currentAnimIndex];
+        sprite.setPosition({50.f, window.getSize().y - sprite.getGlobalBounds().size.y - 50.f});
+        window.draw(sprite);
     }
 
-    // Compute box size and position
+    // Dibuja el cuadro de diálogo
     dialogueBox.setSize({window.getSize().x * 0.8f, 150.f});
     dialogueBox.setOrigin({
         dialogueBox.getSize().x / 2.f,
@@ -111,7 +117,7 @@ void Dialogue::draw(RenderWindow& window) {
 
     window.draw(dialogueBox);
 
-    // Center text within the box
+    // Dibuja el texto centrado
     dialogueText.setString(stringToDisplayForTypewriter);
     dialogueTextBounds = dialogueText.getLocalBounds();
     dialogueText.setOrigin({
@@ -125,7 +131,6 @@ void Dialogue::draw(RenderWindow& window) {
     window.draw(dialogueText);
 }
 
-// Check if dialogue has fully finished
 bool Dialogue::isFinished() const {
     return currentDialogueState == DialogueState::FINISHED;
 }

@@ -6,7 +6,7 @@
 
 class GameOverScreen {
 public:
-    GameOverScreen(const sf::Font& font, const std::vector<std::string>& lines, const sf::Texture& texture, sf::Vector2u windowSize);
+    GameOverScreen(const sf::Font& font, const std::vector<std::string>& lines, sf::Vector2u windowSize);
 
     void update(float dt);
     void handleEvent(const sf::Event& ev);
