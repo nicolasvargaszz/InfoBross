@@ -49,7 +49,7 @@ TiledMap::TiledMap(const std::string& jsonMapPath, const std::vector<std::string
         return;
     }
 
-    nlohmann::json mapData;
+    nlohmann::json mapData;  // this is the library for reading the json file.
     file >> mapData;
 
     tileWidth  = mapData["tilewidth"];
