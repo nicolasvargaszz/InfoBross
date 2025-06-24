@@ -98,6 +98,11 @@ If you want to have a closer look at the license, check here. Have fun! :))
 - For any complain there's the comments session.
 ---
 
+
+## 🤧 General Notes:
+- If you lose the game, please just close the window and re run the game. 
+- If you win the game, and you want to play the game again please also re-run the game, and enjoy.
+
 ## 📜 License
 
 This project is for educational purposes. See [LICENSE](LICENSE) for details.
